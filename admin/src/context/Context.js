@@ -14,15 +14,33 @@ export const AppProvider = ({ children }) => {
   const getProduct = async () => {
     try {
       const res = await axios.get("http://localhost:8000/api/product/getallproduct");
-      console.log("all product", res.data); // res.data has your actual products
+      // console.log("all product", res.data); // res.data has your actual products
       setAllProduct(res.data.products)
     } catch (error) {
       console.error("Error fetching products:", error.message);
     }
   };
 
+    // Fetch orders from 
+     const [orders, setOrders] = useState([]);
+    const fetchOrders = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/api/payment/getallorders");
+        // console.log("Orders API response:", res.data);
+        if (Array.isArray(res.data.allOrders)) {
+          setOrders(res.data.allOrders);
+        } else {
+          setOrders([]);
+        }
+      } catch (error) {
+        alert("Error fetching orders: " + error.message);
+        setOrders([]);
+      }
+    };
+    
   useEffect(() => {
     getProduct();
+    fetchOrders();
   }, []);
   return (
     <AppContext.Provider
@@ -30,7 +48,10 @@ export const AppProvider = ({ children }) => {
      tab,
      setTab,
      allProduct,
-     getProduct
+     getProduct,
+      orders,
+       setOrders,
+       fetchOrders
       }}
     >
       {children}

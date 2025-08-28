@@ -1,13 +1,24 @@
 import { Plus, Search, Filter, Edit, Trash2, Eye, Package } from "lucide-react";
 import { useAppContext } from "../../context/Context";
-import { useCallback } from "react";
+import { useCallback, useState, useMemo } from "react";
 
 const Product = () => {
   const { setTab, allProduct } = useAppContext();
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleAddProduct = useCallback(() => {
-    setTab(3); // safe: runs only on button click
+    setTab(3);
   }, [setTab]);
+
+  // 🔍 Filter products by search term
+  const filteredProducts = useMemo(() => {
+    if (!searchTerm) return allProduct;
+    return allProduct.filter((product) =>
+      `${product.productName} ${product.description}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    );
+  }, [allProduct, searchTerm]);
 
   return (
     <div className="p-4 lg:p-6 space-y-6 relative">
@@ -29,14 +40,19 @@ const Product = () => {
       {/* Filters */}
       <div className="bg-white rounded-lg shadow border border-gray-200 p-4">
         <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
+          {/* Search Box */}
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <input
               type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search products..."
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
+
+          {/* Status Filter (static for now) */}
           <div className="flex items-center space-x-2">
             <Filter className="h-4 w-4 text-gray-400" />
             <select className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
@@ -50,9 +66,9 @@ const Product = () => {
       </div>
 
       {/* Products Grid */}
-      {allProduct && allProduct.length > 0 ? (
+      {filteredProducts && filteredProducts.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {allProduct.map((product) => (
+          {filteredProducts.map((product) => (
             <div
               key={product._id}
               className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
