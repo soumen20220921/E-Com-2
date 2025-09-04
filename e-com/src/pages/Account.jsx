@@ -4,10 +4,14 @@ import AccountInfo from '../components/AccountInfo';
 import AddressInfo from '../components/AddressInfo';
 import OrderInfo from '../components/OrderInfo';
 import { useNavigate } from 'react-router-dom';
+import { useAppContext } from '../context/AppContext';
+
 // import { useAppContext } from '../context/AppContext';
 
 const Account = () => {
   const userEnail= localStorage.getItem("email");
+    const {address} =useAppContext();
+  
   const naviage =useNavigate();
   // 1 = Profile, 2 = Addresses, 3 = Orders
   const [comp, setComp] = useState(1);
@@ -34,7 +38,7 @@ const Account = () => {
                 <div className="w-20 h-20 bg-blue-100 rounded-full mx-auto mb-3 flex items-center justify-center shadow-inner">
                   <User className="h-10 w-10 text-blue-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">User</h3>
+                <h3 className="text-lg font-semibold text-gray-900">{address?.FullName || "User Name"}</h3>
                 <p className="text-sm text-gray-600 truncate">{userEnail || "user@example.com"}</p>
               </div>
 

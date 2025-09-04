@@ -14,7 +14,7 @@ const ProductCard = ({ product, onAddToCart, onToggleWishlist, isCompactMobile }
     >
       {/* Product Image */}
       <div className="relative">
-        <Link to={`/productDetails/${id}`}>
+        <Link to={`/productDetails/${id}`} onClick={() => window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })}>
           <img
             src={image || 'https://placehold.co/300x200'}
             alt={name}
@@ -30,19 +30,19 @@ const ProductCard = ({ product, onAddToCart, onToggleWishlist, isCompactMobile }
         )}
 
         {/* Wishlist Button */}
-        {onToggleWishlist && (
+        {/* {onToggleWishlist && (
           <button
             onClick={() => onToggleWishlist(product)}
             className="absolute top-2 right-2 p-2 rounded-full bg-white text-gray-400 hover:text-red-500"
           >
             ❤️
           </button>
-        )}
+        )} */}
       </div>
 
       {/* Product Info */}
       <div className="p-4">
-        <Link to={`/productDetails/${id}`}>
+        <Link to={`/productDetails/${id}`} onClick={() => window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })}>
           <h3 className="text-xs font-semibold whitespace-nowrap text-gray-900 mb-2 hover:text-blue-600 transition-colors md:text-lg">
             {name}
           </h3>
@@ -66,7 +66,7 @@ const ProductCard = ({ product, onAddToCart, onToggleWishlist, isCompactMobile }
 
         {/* Add to Cart */}
         {onAddToCart && (
-          <Link to={`/productDetails/${id}`}
+          <Link to={`/productDetails/${id}` } onClick={() => window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })}
             className="w-full flex items-center justify-center space-x-2 py-2 px-4 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
           >
             <Eye/>
