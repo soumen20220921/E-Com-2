@@ -5,7 +5,7 @@ import { useAppContext } from '../context/AppContext';
 export const AccountInfo = () => {
 
   const userEnail= localStorage.getItem("email");
-  const {address} =useAppContext();
+  const userName= localStorage.getItem("name");
   // console.log("address",address);
 
   return (
@@ -20,7 +20,7 @@ export const AccountInfo = () => {
         </label>
         <input
           type="text"
-          value={address?.FullName || "User Name"}
+          value={userName || "User Name"}
           readOnly
           className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50"
         />

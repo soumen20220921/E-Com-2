@@ -16,7 +16,8 @@ const Navbar = () => {
   const { login, setLogin } = useAppContext();
   const navigate = useNavigate();
 
-  const {address} =useAppContext();
+  const userName= localStorage.getItem("name");
+
 
 
   useEffect(() => {
@@ -69,7 +70,7 @@ const Navbar = () => {
           }}
           className="text-black text-2xl font-extrabold cursor-pointer hover:text-gray-600 transition-colors"
         >
-          LOGO
+          POMWB
         </div>
 
          <ul className="hidden lg:flex items-center gap-6 text-lg">
@@ -110,7 +111,7 @@ const Navbar = () => {
                     <span className="text-sm">Log In</span>
                   )}
                   <span className={`transition-all duration-300 ease-in-out ${login ? 'max-w-0 whitespace-nowrap opacity-0 group-hover:max-w-[100px] group-hover:opacity-100' : 'hidden'}`}>
-                    {address?.FullName}
+                    {userName}
                   </span>
                 </span>
                 {!login && (
@@ -158,7 +159,7 @@ const Navbar = () => {
       >
         {login && (
           <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-200">
-            <span className="text-lg font-bold text-gray-800">Hi, {address?.FullName}!</span>
+            <span className="text-lg font-bold text-gray-800">Hi, {userName}!</span>
           </div>
         )}
         <ul className="flex flex-col p-4 gap-2">

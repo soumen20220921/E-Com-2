@@ -4,25 +4,37 @@ import AccountInfo from '../components/AccountInfo';
 import AddressInfo from '../components/AddressInfo';
 import OrderInfo from '../components/OrderInfo';
 import { useNavigate } from 'react-router-dom';
-import { useAppContext } from '../context/AppContext';
+import LogoutModal from './LogoutModal';
+
+
 
 // import { useAppContext } from '../context/AppContext';
 
 const Account = () => {
   const userEnail= localStorage.getItem("email");
-    const {address} =useAppContext();
+  const userName= localStorage.getItem("name");
+  const [showModal, setShowModal] = useState(false);
+
+
   
   const naviage =useNavigate();
   // 1 = Profile, 2 = Addresses, 3 = Orders
   const [comp, setComp] = useState(1);
-   const logOut=()=>{
-    localStorage.removeItem('token');
-    localStorage.removeItem('name');
-    localStorage.removeItem('email');
-    localStorage.removeItem('userId');
-    naviage("/auth")
-    window.location.reload();
-   }
+  const logOut = () => {
+  setShowModal(true);
+};
+
+const confirmLogout = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('name');
+  localStorage.removeItem('email');
+  localStorage.removeItem('userId');
+  naviage("/auth");
+  window.location.reload();
+};
+const cancelLogout = () => {
+  setShowModal(false);
+};
 
   return (
     <div className="min-h-screen bg-gray-50 font-inter">
@@ -38,7 +50,7 @@ const Account = () => {
                 <div className="w-20 h-20 bg-blue-100 rounded-full mx-auto mb-3 flex items-center justify-center shadow-inner">
                   <User className="h-10 w-10 text-blue-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">{address?.FullName || "User Name"}</h3>
+                <h3 className="text-lg font-semibold text-gray-900">{userName|| "User Name"}</h3>
                 <p className="text-sm text-gray-600 truncate">{userEnail || "user@example.com"}</p>
               </div>
 
@@ -80,11 +92,12 @@ const Account = () => {
                 </button>
 
                 <button
-                onClick={logOut}
-                 className="w-full flex items-center space-x-2 px-3 py-2 rounded-lg text-left text-red-600 hover:bg-red-50">
-                  <LogOut className="h-4 w-4" />
-                  <span>Logout</span>
-                </button>
+  onClick={logOut}  
+  className="w-full flex items-center space-x-2 px-3 py-2 rounded-lg text-left text-red-600 hover:bg-red-50"
+>
+  <LogOut className="h-4 w-4" />
+  <span>Logout</span>
+</button>
               </nav>
             </div>
           </div>
@@ -99,6 +112,7 @@ const Account = () => {
           </div>
         </div>
       </div>
+          {showModal && <LogoutModal onConfirm={confirmLogout} onCancel={cancelLogout} />}
     </div>
   );
 };

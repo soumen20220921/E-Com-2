@@ -10,20 +10,16 @@ export default function Footer() {
 
   const footerLinks = {
     support: [
-      { name: 'Help Center', path: '/help-center' },
-      { name: 'Contact Us', path: '/contact-us' },
-      { name: 'Shipping Info', path: '/shipping-info' },
-      { name: 'Returns', path: '/returns' },
-      { name: 'Size Guide', path: '/size-guide' },
+      { name: 'Contact Us', path: '/contactus' },
+      { name: 'Returns', path: '/CancellationandRefund' },
+      { name: 'Terms And Conditions', path: '/terms-and-conditions' },
       { name: 'Track Order', path: '/track-order' }
     ],
     company: [
-      { name: 'About Us', path: '/about-us' },
-      { name: 'Careers', path: '/careers' },
-      { name: 'Press', path: '/press' },
-      { name: 'Blog', path: '/blog' },
-      { name: 'Affiliate Program', path: '/affiliate' },
-      { name: 'Wholesale', path: '/wholesale' }
+      { name: 'About Us', path: '/aboutus' },
+      { name: 'Disclaimer', path: '/disclaimer' },
+      { name: 'Privacy Policy', path: '/PrivacyPolicy' },
+      { name: 'Payment Options', path: '/PaymentOptions' }
     ]
   };
 
@@ -138,17 +134,17 @@ export default function Footer() {
                 className="flex items-center justify-center md:justify-start space-x-2"
               >
                 <Code className="h-4 w-4 text-blue-400" />
-                <span className="text-gray-300">Alex & Jane</span>
+                <span className="text-gray-300">Debashis & Soumen</span>
               </Link>
               <div className="flex items-center justify-center md:justify-start space-x-2">
                 <Mail className="h-4 w-4 text-blue-400" />
-                <a href="mailto:alex.jane@example.com" className="text-gray-300 hover:text-white transition-colors hover:underline">
-                  alex.jane@example.com
+                <a href="mailto:adebashispaul@gmail.com" className="text-gray-300 hover:text-white transition-colors hover:underline">
+                  adebashispaul@gmail.com
                 </a>
               </div>
               <div className="flex items-center justify-center md:justify-start space-x-2">
                 <Github className="h-4 w-4 text-blue-400" />
-                <a href="https://github.com/alex-jane-devs" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors hover:underline">
+                <a href="https://github.com/Debashis-11101-srijib" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors hover:underline">
                   GitHub Profile
                 </a>
               </div>
@@ -214,7 +210,7 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-col md:flex-row justify-between items-center text-center md:text-left">
             <div className="text-gray-400 text-xs sm:text-sm mb-2 md:mb-0">
-              © 2024 ShopHub. All rights reserved.
+              © 2024 CoderDeba. All rights reserved.
             </div>
             <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-6 text-xs sm:text-sm text-gray-400">
               <Link to="/privacy-policy" className="hover:text-white transition-colors hover:underline">Privacy Policy</Link>

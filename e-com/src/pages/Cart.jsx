@@ -1,13 +1,15 @@
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Trash2, ShoppingBag, SquarePen, CircleAlert, Loader2 } from "lucide-react";
 import { useAppContext } from "../context/AppContext";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "./ToastStyles.css"; // 🔥 Import the new custom styles
+import "./ToastStyles.css"; 
 import { useState } from "react";
 
 const Cart = () => {
+  const navigate = useNavigate(); 
   const { cart, getCart, token, address, user } = useAppContext();
   const [showAddressWarning, setShowAddressWarning] = useState(false);
   const [loadingPayment, setLoadingPayment] = useState(false);
@@ -30,7 +32,6 @@ const Cart = () => {
               { headers: { Auth: token } }
             );
             getCart();
-            // Using the standard toast with a clear message
             toast.error(
               `${cart[i].title} removed - only ${response.data.product.stock} left in stock`
             );
@@ -97,8 +98,9 @@ const Cart = () => {
       } catch (error) {
         console.error("Error in handlePayment:", error);
         toast.error("Payment failed. Try again later.");
+         navigate("/failure");
       } finally {
-        setLoadingPayment(false); // Stop loading
+        setLoadingPayment(false);
       }
     } else {
       // Show inline warning if address is missing
