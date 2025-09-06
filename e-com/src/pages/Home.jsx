@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Hero from '../components/Hero';
 import ProductCard from '../components/ProductCard';
-import { ArrowRight, Star, Heart, Zap, Sparkles, Truck, ShoppingBag } from 'lucide-react';
+import { ArrowRight, Star, Heart, Sparkles, Truck, ShoppingBag } from 'lucide-react';
 import { useAppContext } from '../context/AppContext.jsx';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Navigation, Autoplay } from 'swiper/modules';
@@ -12,7 +12,7 @@ import 'swiper/css/navigation';
 
 const Home = () => {
   const { allProduct } = useAppContext();
-
+console.log(allProduct);
   const [hotSales, setHotSales] = useState([]);
   const [newArrivals, setNewArrivals] = useState([]);
 
@@ -27,7 +27,7 @@ const Home = () => {
   const categories = [
     {
       id: '1',
-      name: 'Electronics',
+      name: 'saree',
       image: 'https://images.pexels.com/photos/356056/pexels-photo-356056.jpeg?auto=compress&cs=tinysrgb&w=400',
       productCount: 25,
       description: 'Latest gadgets and tech',
@@ -35,7 +35,7 @@ const Home = () => {
     },
     {
       id: '2',
-      name: 'Fashion',
+      name: 'blouse',
       image: 'https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg?auto=compress&cs=tinysrgb&w=400',
       productCount: 18,
       description: 'Trendy clothing & accessories',
@@ -43,7 +43,7 @@ const Home = () => {
     },
     {
       id: '3',
-      name: 'Home & Garden',
+      name: 'men',
       image: 'https://images.pexels.com/photos/1080721/pexels-photo-1080721.jpeg?auto=compress&cs=tinysrgb&w=400',
       productCount: 12,
       description: 'Trendy clothing & accessories',
@@ -51,7 +51,7 @@ const Home = () => {
     },
     {
       id: '4',
-      name: 'Sports',
+      name: 'kids',
       image: 'https://images.pexels.com/photos/863988/pexels-photo-863988.jpeg?auto=compress&cs=tinysrgb&w=400',
       productCount: 15,
       description: 'Trendy clothing & accessories',
@@ -59,7 +59,7 @@ const Home = () => {
     },
     {
       id: '5',
-      name: 'Books',
+      name: 'jwellary',
       image: 'https://images.pexels.com/photos/159866/books-book-pages-read-literature-159866.jpeg?auto=compress&cs=tinysrgb&w=400',
       productCount: 8,
       description: 'Trendy clothing & accessories',
@@ -67,7 +67,7 @@ const Home = () => {
     },
     {
       id: '6',
-      name: 'Beauty',
+      name: 'acceceries',
       image: 'https://images.pexels.com/photos/3785147/pexels-photo-3785147.jpeg?auto=compress&cs=tinysrgb&w=400',
       productCount: 20,
       description: 'Trendy clothing & accessories',
@@ -131,7 +131,7 @@ const Home = () => {
             {categories.map((cat, idx) => (
               <Link
                 key={idx}
-                to={`/category/${cat.name}`}
+                to={`/Categories/${cat.name}`}
                 className="group relative block rounded-lg overflow-hidden shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 border border-gray-200 hover:border-blue-500"
               >
                 <div className="relative overflow-hidden">

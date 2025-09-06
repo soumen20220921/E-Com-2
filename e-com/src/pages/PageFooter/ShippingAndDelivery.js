@@ -24,13 +24,17 @@ const ShippingAndDelivery = () => {
                     </p>
                 </animated.div>
 
+                {/* 1. Processing Time */}
                 <animated.div style={fadeIn} className="bg-white p-6 sm:p-8 rounded-lg shadow-md mb-8">
                     <h2 className="text-2xl font-bold text-gray-800 mb-4">1. Processing Time</h2>
                     <p className="text-gray-600 leading-relaxed">
-                        All orders are shipped within **2-3 business days** and delivered within **7-10 business days**. Orders are not shipped or delivered on weekends or holidays. If we are experiencing a high volume of orders, shipments may be delayed by a few days. Please allow additional days in transit for delivery.
+                        All orders are shipped within <span className="font-bold text-gray-800">2-3 business days</span> and delivered within <span className="font-bold text-gray-800">7-10 business days</span>. 
+                        Orders are not shipped or delivered on weekends or holidays. If we are experiencing a high volume of orders, shipments may be delayed by a few days. 
+                        Please allow additional days in transit for delivery.
                     </p>
                 </animated.div>
 
+                {/* 2. Shipping Rates */}
                 <animated.div style={fadeIn} className="bg-white p-6 sm:p-8 rounded-lg shadow-md mb-8">
                     <h2 className="text-2xl font-bold text-gray-800 mb-4">2. Shipping Rates & Delivery Estimates</h2>
                     <p className="text-gray-600 leading-relaxed">
@@ -38,13 +42,16 @@ const ShippingAndDelivery = () => {
                     </p>
                 </animated.div>
 
+                {/* 3. Order Tracking */}
                 <animated.div style={fadeIn} className="bg-white p-6 sm:p-8 rounded-lg shadow-md mb-8">
                     <h2 className="text-2xl font-bold text-gray-800 mb-4">3. Shipment Confirmation & Order Tracking</h2>
                     <p className="text-gray-600 leading-relaxed">
-                        You will receive a Shipment Confirmation email once your order has shipped containing your tracking number(s). The tracking number will be active within **24 hours**.
+                        You will receive a Shipment Confirmation email once your order has shipped containing your tracking number(s). 
+                        The tracking number will be active within <span className="font-bold text-gray-800">24 hours</span>.
                     </p>
                 </animated.div>
 
+                {/* 4. Customs */}
                 <animated.div style={fadeIn} className="bg-white p-6 sm:p-8 rounded-lg shadow-md mb-8">
                     <h2 className="text-2xl font-bold text-gray-800 mb-4">4. Customs, Duties, and Taxes</h2>
                     <p className="text-gray-600 leading-relaxed">
@@ -52,17 +59,24 @@ const ShippingAndDelivery = () => {
                     </p>
                 </animated.div>
 
+                {/* 5. Damages */}
                 <animated.div style={fadeIn} className="bg-white p-6 sm:p-8 rounded-lg shadow-md mb-8">
                     <h2 className="text-2xl font-bold text-gray-800 mb-4">5. Damages</h2>
                     <p className="text-gray-600 leading-relaxed">
-                        We are not liable for any products damaged or lost during shipping. If you received your order damaged, please contact the shipment carrier to file a claim (a video of package unboxing is **mandatory**). Save all packaging materials and damaged goods before filing a claim.
+                        We are not liable for any products damaged or lost during shipping. 
+                        If you received your order damaged, please contact the shipment carrier to file a claim 
+                        (a video of package unboxing is <span className="font-bold text-red-600">mandatory</span>). 
+                        Save all packaging materials and damaged goods before filing a claim.
                     </p>
                 </animated.div>
 
+                {/* 6. Contact Info */}
                 <animated.div style={fadeIn} className="bg-white p-6 sm:p-8 rounded-lg shadow-md">
                     <h2 className="text-2xl font-bold text-gray-800 mb-4">6. Contact Information</h2>
                     <p className="text-gray-600 leading-relaxed">
-                        If you have any questions about these Terms, please contact us at: **pomwb@gmail.com** or **+91 9907804710**
+                        If you have any questions about these Terms, please contact us at: 
+                        <span className="font-bold text-gray-800"> pomwb@gmail.com</span> or 
+                        <span className="font-bold text-gray-800"> +91 9907804710</span>
                     </p>
                 </animated.div>
             </div>

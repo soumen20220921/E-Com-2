@@ -8,7 +8,7 @@ import Account from "./pages/Account";
 import { useAppContext } from "./context/AppContext";
 import Cart from "./pages/Cart";
 import Footer from "./components/Footer";
-import Categories from "./pages/Categories";
+import Categories from "./pages/Categories.jsx"
 import HotSalesPage from './pages/HotSalesPage';
 import NewArrivalsPage from './pages/NewArrivalsPage';
 import Pagenotfound from './pages/PageFooter/Pagenotfound';
@@ -40,10 +40,10 @@ const App = () => {
             <Route path="/newarrivals" element={<NewArrivalsPage />} />
             <Route path="/productDetails/:id" element={<ProductDetails />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/categories" element={<Categories />} />
             <Route path="*" element={<Pagenotfound />} />
             <Route path="/aboutus" element={<AboutPage />} />
             <Route path="/contactus" element={<ContactUs />} />
+            <Route path="/Categories/:name" element={<Categories />} />
             <Route path="/disclaimer" element={<Disclaimer />} />
             <Route path="/PaymentOptions" element={<PaymentOptions />} />
             <Route path="/CancellationandRefund" element={<CancellationAndRefund />} />

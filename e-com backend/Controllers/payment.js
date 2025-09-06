@@ -96,7 +96,8 @@ export const getOrderById = async (req, res) => {
     let orders = await Payment.find({ userId: userId }).sort({ orderDate: -1 });
     // console.log(orders)
     // console.log(orders)
-    res.json(orders);
+    res.json({ message: "Fetched all order successfully",
+      success: true,orders});
   } catch (error) {
     console.log(error);
   }

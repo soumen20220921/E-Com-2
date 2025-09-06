@@ -78,7 +78,7 @@ export const checkStatus = async (req, res) => {
     const { merchantOrderId } = req.query;
     console.log("Checking status for merchantOrderId:", merchantOrderId);
     if (!merchantOrderId) {
-      return res.redirect("http://localhost:3001");
+      return res.redirect("http://localhost:3000/failure");
     }
 
     // Get payment status from PhonePe
@@ -101,7 +101,7 @@ export const checkStatus = async (req, res) => {
 
     if (!orderConfirm) {
       console.log("❌ Payment not found for:", merchantOrderId);
-      return res.redirect("http://localhost:3001");
+      return res.redirect("http://localhost:3000/failure");
     }
 
     // Only update inventory if payment is successful
@@ -137,12 +137,12 @@ export const checkStatus = async (req, res) => {
 
     // Redirect based on status
     if (state === "COMPLETED") {
-      return res.redirect("http://localhost:3001");
+      return res.redirect("http://localhost:3000/success");
     } else {
-      return res.redirect("hhttp://localhost:3001");
+      return res.redirect("http://localhost:3000/failure");
     }
   } catch (error) {
     console.error("Error in checkStatus:", error);
-    return res.redirect("http://localhost:3001");
+    return res.redirect("http://localhost:3000/failure");
   }
 };

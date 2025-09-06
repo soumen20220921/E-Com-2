@@ -87,16 +87,48 @@ export const AppProvider = ({ children }) => {
           },
         }
       );
-      // console.log("cart", res.data.cart.items); // res.data has your actual cart
+      console.log("cart", res); // res.data has your actual cart
       setCart(res.data.cart.items);
     } catch (error) {
       console.error("Error fetching products:", error.message);
     }
   };
 
+// Fetch Order
+const [order, setOrder] = useState(null);
+const [orderLoading, setOrderLoading] = useState(false);
+const [orderError, setOrderError] = useState(null);
+
+const getOrder = async () => {
+  setOrderLoading(true);   // start loading before API call
+  setOrderError(null);     // reset error state
+
+  try {
+    const res = await axios.get(
+      "http://localhost:8000/api/payment/getOrderById",
+      {
+        headers: {
+          Auth: token, // matches backend middleware
+        },
+      }
+    );
+
+    console.log("order", res.data);
+    setOrder(res.data.orders || null); // set order from response
+  } catch (err) {
+    console.error("Error fetching orders:", err);
+    setOrderError(err.response?.data?.message || "Failed to fetch orders");
+  } finally {
+    setOrderLoading(false); // stop loading whether success or error
+  }
+};
+
+
+
   useEffect(() => {
     getProduct();
     getCart();
+    getOrder();
   }, []);
   return (
     <AppContext.Provider
@@ -114,7 +146,11 @@ export const AppProvider = ({ children }) => {
         setLoading,
         allProduct,
         cart,
-        getCart
+        getCart,
+        order,
+        getOrder,
+        orderLoading,
+        orderError
       }}
     >
       {children}
