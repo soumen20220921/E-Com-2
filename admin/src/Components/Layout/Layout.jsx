@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Navbar from "./Navbar";
 import { Sidebar } from "./Sidebar";
 import { useAppContext } from "../../context/Context";
@@ -6,47 +6,64 @@ import User from "../users/User.jsx";
 import Product from "../product/Product.jsx";
 import Order from "../orders/Order.jsx";
 import AddProduct from "../product/AddProduct.jsx";
+import Dashboard from "../dashboard/Dashboard.jsx";
+import Settings from "../settings/Settings.jsx";
 
 const Layout = () => {
   const { tab } = useAppContext();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({ top: 0, behavior: "smooth" });
+      scrollRef.current.scrollTop = 0;
+    }
+  }, [tab]);
+
+  const renderContent = () => {
+    switch (tab) {
+      case 0: return <Dashboard />;
+      case 1: return <User />;
+      case 2: return <Product />;
+      case 3: return <Order />;
+      case 4: return <AddProduct />;
+      case 5: return <Settings />;
+      default: return <Dashboard />;
+    }
+  };
+
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar (Desktop) */}
+    <div className="flex h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="hidden lg:flex">
         <Sidebar />
       </div>
 
-      {/* Sidebar Overlay (Mobile) */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      {/* Sidebar Drawer (Mobile) */}
       <div
-        className={`fixed inset-y-0 left-0 z-50 w-64 transform bg-white shadow-lg transition-transform duration-300 ease-in-out lg:hidden ${
+        className={`fixed inset-y-0 left-0 z-50 w-72 transform bg-white shadow-2xl transition-transform duration-500 ease-in-out lg:hidden ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <Sidebar closeSidebar={() => setSidebarOpen(false)} />
       </div>
 
-      {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Navbar */}
         <Navbar onMenuClick={() => setSidebarOpen(true)} />
 
-        {/* Content */}
-        <main className="flex-1 overflow-x-hidden overflow-y-auto p-3 sm:p-4 md:p-6 bg-white">
-          <div className="max-w-7xl mx-auto">
-            {tab === 0 && <User />}
-            {tab === 1 && <Product />}
-            {tab === 2 && <Order />}
-            {tab === 3 && <AddProduct/>}
+        <main
+          ref={scrollRef}
+          className="flex-1 overflow-x-hidden overflow-y-auto p-4 sm:p-6 md:p-8 bg-white/80 backdrop-blur-lg"
+        >
+          <div className="max-w-7xl mx-auto animate-fadeIn">
+            {renderContent()}
           </div>
         </main>
       </div>

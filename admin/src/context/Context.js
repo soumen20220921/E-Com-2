@@ -1,57 +1,65 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 
-
-// 1. Create the context
 const AppContext = createContext();
 
-// 2. Create a provider component
 export const AppProvider = ({ children }) => {
-    const [tab,setTab] = useState(0);
+  const [tab, setTab] = useState(0);
 
-    // Fetch all product
-    const [allProduct, setAllProduct] = useState(null);
+  const [allProduct, setAllProduct] = useState(null);
+  const [orders, setOrders] = useState(null);
+  const [allUser, setAllUser] = useState(null);  
+
+  // Function to fetch all products
   const getProduct = async () => {
     try {
       const res = await axios.get("http://localhost:8000/api/product/getallproduct");
-      // console.log("all product", res.data); // res.data has your actual products
-      setAllProduct(res.data.products)
+      setAllProduct(Array.isArray(res.data.products) ? res.data.products : []);
     } catch (error) {
       console.error("Error fetching products:", error.message);
+      setAllProduct([]);
     }
   };
 
-    // Fetch orders from 
-     const [orders, setOrders] = useState([]);
-    const fetchOrders = async () => {
-      try {
-        const res = await axios.get("http://localhost:8000/api/payment/getallorders");
-        // console.log("Orders API response:", res.data);
-        if (Array.isArray(res.data.allOrders)) {
-          setOrders(res.data.allOrders);
-        } else {
-          setOrders([]);
-        }
-      } catch (error) {
-        alert("Error fetching orders: " + error.message);
-        setOrders([]);
-      }
-    };
-    
+  // Function to fetch all orders
+  const fetchOrders = async () => {
+    try {
+      const res = await axios.get("http://localhost:8000/api/payment/getallorders");
+      setOrders(Array.isArray(res.data.allOrders) ? res.data.allOrders : []);
+    } catch (error) {
+      console.error("Error fetching orders: " + error.message);
+      setOrders([]);
+    }
+  };
+
+   const getUsers = async () => {
+    try {
+      const res = await axios.get("http://localhost:8000/api/user/allusers");
+      setAllUser(Array.isArray(res.data.users) ? res.data.users : []);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      setAllUser([]);
+    }
+  };
+
+  // Fetch all data on initial component mount
   useEffect(() => {
     getProduct();
     fetchOrders();
+    getUsers();  
   }, []);
+
   return (
     <AppContext.Provider
       value={{
-     tab,
-     setTab,
-     allProduct,
-     getProduct,
-      orders,
-       setOrders,
-       fetchOrders
+        tab,
+        setTab,
+        allProduct,
+        getProduct,
+        orders,
+        fetchOrders,
+        allUser,  
+        getUsers,  
       }}
     >
       {children}
@@ -59,7 +67,6 @@ export const AppProvider = ({ children }) => {
   );
 };
 
-// 3. Custom hook for easier usage
-export const useAppContext = () => {
+ export const useAppContext = () => {
   return useContext(AppContext);
 };

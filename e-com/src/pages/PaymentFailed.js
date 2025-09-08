@@ -1,106 +1,134 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaTimesCircle } from "react-icons/fa";
+import { FaHouseChimney } from "react-icons/fa6";
+import { AiOutlineReload } from "react-icons/ai";
 import { motion } from "framer-motion";
 
-const PaymentFailed = () => {
+const PaymentFailedPage = () => {
   const navigate = useNavigate();
-  const [animateCard, setAnimateCard] = useState(false);
 
   useEffect(() => {
-    // Scroll to the top of the page on component mount
     window.scrollTo(0, 0);
-    // Trigger the card animation after a brief delay
-    const timer = setTimeout(() => {
-      setAnimateCard(true);
-    }, 100);
-    return () => clearTimeout(timer);
   }, []);
 
-  const handleTryAgain = () => {
-    navigate("/cart");
-  };
+  const goToHome = () => navigate("/");
+  const tryAgain = () => navigate("/cart");
 
-  const handleGoToHome = () => {
-    navigate("/");
-  };
-
-  // Framer Motion variants for card animation
   const cardVariants = {
-    hidden: { opacity: 0, y: 50, scale: 0.95 },
-    visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 100, damping: 10, duration: 0.6 } }
+    hidden: { opacity: 0, y: 60, scale: 0.9 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: { type: "spring", stiffness: 120, damping: 14, delay: 0.2 }
+    }
   };
 
-  // Framer Motion variants for icon animation
   const iconVariants = {
-    hidden: { opacity: 0, scale: 0.5 },
-    visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 100, damping: 10, delay: 0.4 } }
+    hidden: { opacity: 0, scale: 0.5, rotate: -30 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      rotate: 0,
+      transition: { type: "spring", stiffness: 120, damping: 12, delay: 0.4 }
+    }
   };
 
-  // Framer Motion variants for the red pulsing circle
   const pulseVariants = {
     pulse: {
-      scale: [1, 1.05, 1],
-      opacity: [1, 0.8, 1],
-      transition: {
-        duration: 2,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
+      scale: [1, 1.15, 1],
+      opacity: [1, 0.85, 1],
+      transition: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+    }
+  };
+
+  const floatVariants = {
+    animate: {
+      y: [0, -15, 0],
+      rotate: [0, 10, -10, 0],
+      transition: { duration: 5, repeat: Infinity, ease: "easeInOut" }
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4 sm:p-6 bg-gray-50 font-sans">
+    <div className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-red-50 via-white to-rose-100 font-sans overflow-hidden">
+      {/* Floating Icons */}
       <motion.div
-        className="w-full max-w-lg p-8 sm:p-10 bg-white rounded-3xl shadow-2xl text-center border border-gray-200"
+        className="absolute top-12 left-6 sm:left-16 text-5xl sm:text-6xl text-rose-200"
+        variants={floatVariants}
+        animate="animate"
+      >
+        💳
+      </motion.div>
+      <motion.div
+        className="absolute bottom-12 right-6 sm:right-16 text-6xl sm:text-7xl text-red-200"
+        variants={floatVariants}
+        animate="animate"
+      >
+        ⚠️
+      </motion.div>
+      <motion.div
+        className="absolute top-1/4 right-1/4 text-4xl sm:text-5xl text-rose-100"
+        variants={floatVariants}
+        animate="animate"
+      >
+        💔
+      </motion.div>
+
+      {/* Failed Card */}
+      <motion.div
+        className="relative w-full max-w-md sm:max-w-lg p-6 sm:p-10 bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl text-center border border-red-200"
         variants={cardVariants}
         initial="hidden"
-        animate={animateCard ? "visible" : "hidden"}
+        animate="visible"
       >
-        <div className="flex justify-center -mt-20 mb-8 sm:mb-10">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 via-rose-500 to-red-400 animate-pulse rounded-t-3xl" />
+
+        <div className="flex justify-center -mt-16 sm:-mt-20 mb-6 sm:mb-10">
           <motion.div
-            className="w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center rounded-full bg-white shadow-2xl"
+            className="w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center rounded-full bg-white shadow-xl border-4 border-red-300"
             variants={iconVariants}
           >
-            <motion.div
-              variants={pulseVariants}
-              animate="pulse"
-            >
-              <FaTimesCircle className="text-6xl sm:text-7xl text-red-500" />
+            <motion.div variants={pulseVariants} animate="pulse">
+              <FaTimesCircle className="text-5xl sm:text-6xl text-red-600 drop-shadow-lg" />
             </motion.div>
           </motion.div>
         </div>
 
+        {/* Text */}
         <div className="text-center">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-800 tracking-tight mb-2">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-red-700 tracking-tight mb-3">
             Payment Failed!
-          </h2>
-          <p className="text-lg text-gray-600">
-            Unfortunately, your payment could not be processed. Please review your details or try again.
+          </h1>
+          <p className="text-sm sm:text-base md:text-lg text-slate-600">
+            Oops 😟 Something went wrong with your transaction.
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 sm:gap-5 justify-center mt-8">
+        {/* Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mt-8">
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleTryAgain}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold text-lg 
-                       bg-red-500 text-white shadow-lg transition-all hover:bg-red-600 
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.92 }}
+            onClick={tryAgain}
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-full font-bold text-base sm:text-lg 
+                       bg-gradient-to-r from-red-500 to-rose-600 text-white shadow-lg 
+                       transition-all hover:from-red-600 hover:to-rose-700
                        focus:outline-none focus:ring-4 focus:ring-red-400 focus:ring-opacity-50"
           >
-            Try Again
+            <AiOutlineReload className="text-lg sm:text-xl" /> Try Again
           </motion.button>
+
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleGoToHome}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-lg 
-                       bg-gray-200 text-gray-700 shadow-md transition-all hover:bg-gray-300
-                       focus:outline-none focus:ring-4 focus:ring-gray-400 focus:ring-opacity-50"
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.92 }}
+            onClick={goToHome}
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold text-base sm:text-lg 
+                       bg-gray-200 text-gray-800 shadow-md transition-all hover:bg-gray-300
+                       focus:outline-none focus:ring-4 focus:ring-gray-300 focus:ring-opacity-50"
           >
-            Go to Home
+            <FaHouseChimney className="text-lg sm:text-xl" /> Go to Home
           </motion.button>
         </div>
       </motion.div>
@@ -108,4 +136,4 @@ const PaymentFailed = () => {
   );
 };
 
-export default PaymentFailed;
+export default PaymentFailedPage;

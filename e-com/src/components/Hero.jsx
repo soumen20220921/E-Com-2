@@ -8,7 +8,7 @@ export default function Hero() {
 
    const handleClickShop = () => {
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" }); 
-    navigate("/categories");
+    navigate("/hotsales");
   };
 
   return (

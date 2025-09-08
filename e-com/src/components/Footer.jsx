@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin,  Shield, Truck, Code, Github, Star, CheckCircle } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin, Shield, Truck, Code, Github, Star, CheckCircle } from 'lucide-react';
 
 export default function Footer() {
-   const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
 
   const footerLinks = {
     support: [
@@ -23,7 +22,7 @@ export default function Footer() {
     ]
   };
 
-   const handleSubscribe = (e) => {
+  const handleSubscribe = (e) => {
     e.preventDefault();
     if (email) {
       setIsSubmitting(true);
@@ -32,71 +31,62 @@ export default function Footer() {
         setIsSubmitting(false);
         setEmail('');
         console.log(`Subscribed with email: ${email}`);
-      }, 3000);
+      }, 2000);
     }
   };
+
   return (
-    <footer className="bg-gray-900 text-white font-inter">
-      {/* Main Footer Content Area */}
+    <footer className="bg-gray-900 text-white font-inter overflow-hidden relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 sm:gap-12">
-          {/* Company Info Section */}
-          <div className="lg:col-span-2 text-center md:text-left">
-            <Link to="/" className="inline-flex items-center justify-center md:justify-start space-x-2 mb-4 transform transition-transform duration-300 hover:scale-105 cursor-pointer">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-md">
-                <span className="text-white font-bold text-lg">S</span>
+          <div className="lg:col-span-2 text-center md:text-left animate-fadeInLeft">
+            <Link to="/" className="inline-flex items-center justify-center md:justify-start space-x-2 mb-4 transform transition-transform duration-500 hover:scale-110 cursor-pointer">
+              <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-pink-500 rounded-lg flex items-center justify-center shadow-lg animate-pulse">
+                <span className="text-white font-bold text-lg">P</span>
               </div>
-              <span className="text-2xl font-bold">ShopHub</span>
+              <span className="text-2xl font-extrabold tracking-wide text-white">POMWB</span>
             </Link>
             <p className="text-gray-300 mb-6 leading-relaxed text-sm sm:text-base">
-              Your one-stop destination for premium quality products at unbeatable prices.
-              We're committed to providing exceptional shopping experiences with fast shipping
-              and outstanding customer service.
+              Premium products with unbeatable prices. Experience fast shipping and outstanding service.
             </p>
-            
-            {/* Contact Information */}
+
+            {/* Contact Info */}
             <div className="space-y-3 text-sm">
               <div className="flex items-center justify-center md:justify-start space-x-3">
-                <Phone className="h-4 w-4 text-blue-400" />
-                <span className="text-gray-300">+1 (555) 123-4567</span>
+                <Phone className="h-5 w-5 text-blue-400 animate-bounce" />
+                <span className="text-gray-300">+91 9474048860</span>
               </div>
               <div className="flex items-center justify-center md:justify-start space-x-3">
-                <Mail className="h-4 w-4 text-blue-400" />
+                <Mail className="h-5 w-5 text-blue-400 animate-bounce delay-100" />
                 <span className="text-gray-300">support@shophub.com</span>
               </div>
               <div className="flex items-center justify-center md:justify-start space-x-3">
-                <MapPin className="h-4 w-4 text-blue-400" />
+                <MapPin className="h-5 w-5 text-blue-400 animate-bounce delay-200" />
                 <span className="text-gray-300">123 Commerce St, New York</span>
               </div>
             </div>
 
-            {/* Social Media Links */}
+            {/* Social Links */}
             <div className="flex space-x-4 mt-6 justify-center md:justify-start">
-              <a href="https://facebook.com" aria-label="Facebook" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-600 transition-all duration-300 transform hover:scale-110 shadow-md">
-                <Facebook className="h-5 w-5" />
-              </a>
-              <a href="https://twitter.com" aria-label="Twitter" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-600 transition-all duration-300 transform hover:scale-110 shadow-md">
-                <Twitter className="h-5 w-5" />
-              </a>
-              <a href="https://instagram.com" aria-label="Instagram" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-600 transition-all duration-300 transform hover:scale-110 shadow-md">
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a href="https://youtube.com" aria-label="Youtube" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-600 transition-all duration-300 transform hover:scale-110 shadow-md">
-                <Youtube className="h-5 w-5" />
-              </a>
+              {[Facebook, Twitter, Instagram, Youtube].map((Icon, idx) => (
+                <a
+                  key={idx}
+                  href="#"
+                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gradient-to-br hover:from-indigo-500 hover:to-pink-500 transform hover:scale-110 transition-all duration-300 shadow-lg"
+                >
+                  <Icon className="h-5 w-5 text-white" />
+                </a>
+              ))}
             </div>
           </div>
 
-          {/* Support Links Section */}
-          <div className="text-center md:text-left">
+          {/* Support Links */}
+          <div className="text-center md:text-left animate-fadeInUp">
             <h3 className="text-lg font-semibold mb-4">Support</h3>
             <ul className="space-y-2 text-sm">
               {footerLinks.support.map((link) => (
                 <li key={link.name}>
-                  <Link
-                    to={link.path}
-                    className="text-gray-300 hover:text-white transition-colors duration-200 transform hover:translate-x-1 inline-block"
-                  >
+                  <Link to={link.path} className="text-gray-300 hover:text-white transition-colors duration-200 transform hover:translate-x-1 inline-block">
                     {link.name}
                   </Link>
                 </li>
@@ -104,16 +94,13 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Company Links Section */}
-          <div className="text-center md:text-left">
+          {/* Company Links */}
+          <div className="text-center md:text-left animate-fadeInUp delay-100">
             <h3 className="text-lg font-semibold mb-4">Company</h3>
             <ul className="space-y-2 text-sm">
               {footerLinks.company.map((link) => (
                 <li key={link.name}>
-                  <Link
-                    to={link.path}
-                    className="text-gray-300 hover:text-white transition-colors duration-200 transform hover:translate-x-1 inline-block"
-                  >
+                  <Link to={link.path} className="text-gray-300 hover:text-white transition-colors duration-200 transform hover:translate-x-1 inline-block">
                     {link.name}
                   </Link>
                 </li>
@@ -121,30 +108,24 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Developers Section - NEW */}
-          <div className="text-center md:text-left">
+          {/* Developers Section */}
+          <div className="text-center md:text-left animate-fadeInUp delay-200">
             <h3 className="text-lg font-semibold mb-4">Developers</h3>
             <div className="space-y-2 text-sm">
-              <p className="text-gray-300">
-                This website was developed with passion by:
-              </p>
-              <Link
-                to={`/developers`}
-                onClick={() => window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })}
-                className="flex items-center justify-center md:justify-start space-x-2"
-              >
-                <Code className="h-4 w-4 text-blue-400" />
+              <p className="text-gray-300">Developed with passion by:</p>
+              <Link to="/developers" className="flex items-center justify-center md:justify-start space-x-2 hover:text-indigo-400 transition-all duration-300">
+                <Code className="h-4 w-4 text-indigo-500" />
                 <span className="text-gray-300">Debashis & Soumen</span>
               </Link>
               <div className="flex items-center justify-center md:justify-start space-x-2">
                 <Mail className="h-4 w-4 text-blue-400" />
-                <a href="mailto:adebashispaul@gmail.com" className="text-gray-300 hover:text-white transition-colors hover:underline">
+                <a href="mailto:adebashispaul@gmail.com" className="text-gray-300 hover:text-white hover:underline transition-all duration-300">
                   adebashispaul@gmail.com
                 </a>
               </div>
               <div className="flex items-center justify-center md:justify-start space-x-2">
-                <Github className="h-4 w-4 text-blue-400" />
-                <a href="https://github.com/Debashis-11101-srijib" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors hover:underline">
+                <Github className="h-4 w-4 text-gray-400" />
+                <a href="https://github.com/Debashis-11101-srijib" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white hover:underline transition-all duration-300">
                   GitHub Profile
                 </a>
               </div>
@@ -152,28 +133,35 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Subscription Section */}
         <div className="border-t border-gray-800 mt-12 pt-8">
-          <div className="max-w-md mx-auto text-center">
+          <div className="max-w-md mx-auto text-center animate-fadeInUp">
             <h3 className="text-xl font-semibold mb-2">Stay Updated</h3>
             {subscribed ? (
               <div className="bg-green-600 text-white p-4 rounded-lg shadow-lg flex items-center justify-center space-x-2 animate-pulse">
                 <CheckCircle className="h-6 w-6" />
-                <p className="text-sm sm:text-base font-semibold">You've been successfully subscribed!</p>
+                <p className="text-sm sm:text-base font-semibold">Successfully Subscribed!</p>
               </div>
             ) : (
               <form onSubmit={handleSubscribe}>
-                <p className="text-gray-300 mb-4 text-sm sm:text-base">Subscribe to get special offers, free giveaways, and updates.</p>
+                <p className="text-gray-300 mb-4 text-sm sm:text-base">
+                  Subscribe for special offers, giveaways, and updates.
+                </p>
                 <div className="flex flex-col sm:flex-row gap-3 sm:space-x-2">
                   <input
                     type="email"
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-500 w-full"
+                    className="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-white placeholder-gray-500 w-full transition-all duration-300 shadow-inner"
                     required
                     disabled={isSubmitting}
                   />
-                  <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded-lg transition-all duration-300 hover:bg-blue-700 hover:shadow-lg hover:scale-105 w-full sm:w-auto font-medium" disabled={isSubmitting}>
+                  <button
+                    type="submit"
+                    className="bg-gradient-to-r from-indigo-500 to-pink-500 text-white px-6 py-2 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg w-full sm:w-auto font-medium"
+                    disabled={isSubmitting}
+                  >
                     {isSubmitting ? 'Subscribing...' : 'Subscribe'}
                   </button>
                 </div>
@@ -181,9 +169,9 @@ export default function Footer() {
             )}
           </div>
         </div>
-      </div>
 
-      <div className="border-t border-gray-800">
+        {/* Features Cards */}
+       <div className="border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <h3 className="text-xl font-semibold mb-6 text-center">Why Shop with Us?</h3>
           <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-6 text-center">
@@ -205,17 +193,15 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      
-      <div className="border-t border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-col md:flex-row justify-between items-center text-center md:text-left">
-            <div className="text-gray-400 text-xs sm:text-sm mb-2 md:mb-0">
-              © 2024 CoderDeba. All rights reserved.
-            </div>
+
+        {/* Bottom Section */}
+        <div className="border-t border-gray-800 mt-12 py-6">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center text-center md:text-left space-y-4 md:space-y-0">
+            <div className="text-gray-400 text-xs sm:text-sm">© 2024 CoderDeba. All rights reserved.</div>
             <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-6 text-xs sm:text-sm text-gray-400">
-              <Link to="/privacy-policy" className="hover:text-white transition-colors hover:underline">Privacy Policy</Link>
-              <Link to="/terms-of-service" className="hover:text-white transition-colors hover:underline">Terms of Service</Link>
-              <Link to="/cookie-policy" className="hover:text-white transition-colors hover:underline">Cookie Policy</Link>
+              <Link to="/PrivacyPolicy" className="hover:text-white hover:underline transition-all duration-300">Privacy Policy</Link>
+              <Link to="/terms-and-conditions" className="hover:text-white hover:underline transition-all duration-300">Terms of Service</Link>
+              <Link to="/CancellationandRefund" className="hover:text-white hover:underline transition-all duration-300">Returns Policy</Link>
             </div>
           </div>
         </div>

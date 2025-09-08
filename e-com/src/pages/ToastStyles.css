@@ -2,23 +2,31 @@
 
 /* Define custom color variables for the dark theme */
 :root {
-  --toastify-color-dark: #1f2937; /* Background color */
-  --toastify-color-success: #34d399; /* Green for success */
-  --toastify-color-error: #f87171;   /* Red for error */
-  --toastify-color-info: #60a5fa;   /* Blue for info */
-  --toastify-color-warning: #fbbf24; /* Yellow for warning */
+ --toastify-color-dark: #1f2937;
+  --toastify-color-success: #34d399;
+  --toastify-color-error: #f87171;
+  --toastify-color-info: #60a5fa;
+  --toastify-color-warning: #fbbf24;
 }
 
 /* Base style for all toasts */
 .Toastify__toast {
-  border-radius: 8px;
+ border-radius: 1rem;
   font-family: 'Inter', sans-serif;
-  padding: 1rem;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  color: white;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  position: relative;
+  transform: translateZ(0);
+  animation: toastBounceIn 0.6s ease forwards;
 }
 
 /* Custom progress bar styles */
 .Toastify__progress-bar--success {
-  background: var(--toastify-color-success);
+  background: linear-gradient(135deg, #22c55e, #10b981); box-shadow: 0 4px 20px rgba(52, 211, 153, 0.6); 
 }
 
 .Toastify__progress-bar--error {
