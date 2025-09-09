@@ -212,7 +212,7 @@ const AddProduct = () => {
       {/* Header */}
       <div className="flex items-center space-x-4 animate-slide-in-down">
         <button
-          onClick={() => setTab(1)}
+          onClick={() => setTab(2)}
           type="button"
           className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
         >
