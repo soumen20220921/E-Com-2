@@ -119,7 +119,9 @@ const Home = () => {
               <Link
                 key={idx}
                 to={`/Categories/${cat.name}`}
-                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                 onClick={() =>
+            window.scrollTo({ top: 0, left: 0, behavior: "smooth" })
+          }
                 className="group relative block rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-105"
               >
                 <div className="relative">

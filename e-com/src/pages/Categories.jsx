@@ -468,6 +468,8 @@ const Categories = () => {
                       price: product.price,
                     }}
                     isCompactMobile={true}
+                     onAddToCart={() => {}}
+                  onToggleWishlist={() => {}}
                   />
                 </motion.div>
               ))

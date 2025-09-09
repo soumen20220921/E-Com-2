@@ -146,19 +146,21 @@ const AddressInfo = () => {
         )}
       </div>
 
-      {/* Success Message */}
       {showSuccessMessage && (
-        <div className="fixed inset-0 flex items-center justify-center bg-green-600 bg-opacity-80 z-50 animate-fade-in p-4">
-          <div className="flex flex-col items-center text-center">
-            <CheckCircle className="h-20 w-20 sm:h-24 sm:w-24 mb-4 animate-pulse text-white" />
-            <p className="text-xl sm:text-2xl font-bold text-white">Address Updated Successfully!</p>
-          </div>
+        <div className="fixed inset-0 flex flex-col items-center justify-center z-50 animate-fade-in bg-gradient-to-br from-green-400 to-emerald-600 p-4 text-center">
+          <CheckCircle className="h-24 w-24 sm:h-32 sm:w-32 text-white animate-bounce-in" />
+          <h2 className="mt-6 text-2xl sm:text-4xl font-extrabold text-white tracking-wide">
+            Address Saved!
+          </h2>
+          <p className="mt-2 text-lg sm:text-xl text-green-100 font-medium">
+            Your address has been successfully updated.
+          </p>
         </div>
       )}
 
       {/* Popup Modal */}
       {showPopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4">
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-3xl p-6 sm:p-8 w-full max-w-md md:max-w-xl shadow-2xl transform animate-scale-up hover:scale-105 transition-transform duration-300 relative">
             <button
               onClick={() => setShowPopup(false)}

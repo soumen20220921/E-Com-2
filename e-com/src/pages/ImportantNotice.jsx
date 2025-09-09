@@ -5,7 +5,7 @@ const ImportantNotice = () => {
   const [showBengali, setShowBengali] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowBengali(true), 12000);
+    const timer = setTimeout(() => setShowBengali(true), 120000);
     return () => clearTimeout(timer);
   }, []);
 

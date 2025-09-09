@@ -10,8 +10,15 @@ export const AppProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [login, setLogin] = useState(false);
+  const [totalItems, setTotalItems] = useState(0); 
 
   const token = localStorage.getItem("token");
+  const user = {
+    name: localStorage.getItem("name"),
+    email: localStorage.getItem("email"),
+    id: localStorage.getItem("userId"),
+  };
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -20,16 +27,12 @@ export const AppProvider = ({ children }) => {
       setLogin(false);
     }
   }, []);
-  const [user, setUser] = useState({
-    name: "",
-    email: "",
-    id: "",
-  });
+
   // Fetch User Address
   useEffect(() => {
     const fetchAddress = async () => {
       try {
-        const token = localStorage.getItem("token"); // Assuming token is stored in localStorage
+        const token = localStorage.getItem("token");
         if (!token) {
           setError("Please login first");
           setLoading(false);
@@ -37,10 +40,10 @@ export const AppProvider = ({ children }) => {
         }
 
         const res = await axios.get(
-          "http://localhost:8000/api/address/getAddressById", // your GET route
+          "http://localhost:8000/api/address/getAddressById",
           {
             headers: {
-              Auth: token, // sending token like middleware expects
+              Auth: token,
             },
           }
         );
@@ -48,7 +51,7 @@ export const AppProvider = ({ children }) => {
         if (res.data.message === "Address Found") {
           setAddress(res.data.address);
           setError(null);
-          // console.log("address",res.data.address);
+            // console.log("address",res.data.address);
         } else {
           setError(res.data.message || "Failed to fetch address");
         }
@@ -69,67 +72,74 @@ export const AppProvider = ({ children }) => {
       const res = await axios.get(
         "http://localhost:8000/api/product/getallproduct"
       );
-      // console.log("all product", res.data); // res.data has your actual products
+            // console.log("all product", res.data); // res.data has your actual products
       setAllProduct(res.data.products);
     } catch (error) {
       console.error("Error fetching products:", error.message);
     }
   };
+
   // Fetch cart details
   const [cart, setCart] = useState(null);
-    const getCart = async () => {
+  const getCart = async () => {
     try {
       const res = await axios.get(
         "http://localhost:8000/api/cart/userCart",
         {
           headers: {
-            Auth: token, // matches backend middleware
+            Auth: token,
           },
         }
       );
-      console.log("cart", res); // res.data has your actual cart
       setCart(res.data.cart.items);
+      // Calculate total items from the fetched cart
+      const total = res.data.cart.items.reduce(
+        (acc, item) => acc + item.qty,
+        0
+      );
+      setTotalItems(total);
     } catch (error) {
-      console.error("Error fetching products:", error.message);
+      console.error("Error fetching cart:", error.message);
     }
   };
 
-// Fetch Order
-const [order, setOrder] = useState(null);
-const [orderLoading, setOrderLoading] = useState(false);
-const [orderError, setOrderError] = useState(null);
+  // Fetch Order
+  const [order, setOrder] = useState(null);
+  const [orderLoading, setOrderLoading] = useState(false);
+  const [orderError, setOrderError] = useState(null);
 
-const getOrder = async () => {
-  setOrderLoading(true);   // start loading before API call
-  setOrderError(null);     // reset error state
+  const getOrder = async () => {
+    setOrderLoading(true);
+    setOrderError(null);
 
-  try {
-    const res = await axios.get(
-      "http://localhost:8000/api/payment/getOrderById",
-      {
-        headers: {
-          Auth: token, // matches backend middleware
-        },
-      }
-    );
+    try {
+      const res = await axios.get(
+        "http://localhost:8000/api/payment/getOrderById",
+        {
+          headers: {
+            Auth: token,
+          },
+        }
+      );
 
-    console.log("order", res.data);
-    setOrder(res.data.orders || null); // set order from response
-  } catch (err) {
-    console.error("Error fetching orders:", err);
-    setOrderError(err.response?.data?.message || "Failed to fetch orders");
-  } finally {
-    setOrderLoading(false); // stop loading whether success or error
-  }
-};
-
-
+      console.log("order", res.data);
+      setOrder(res.data.orders || null);
+    } catch (err) {
+      console.error("Error fetching orders:", err);
+      setOrderError(err.response?.data?.message || "Failed to fetch orders");
+    } finally {
+      setOrderLoading(false);
+    }
+  };
 
   useEffect(() => {
     getProduct();
-    getCart();
-    getOrder();
-  }, []);
+    if (token) {
+      getCart();
+      getOrder();
+    }
+  }, [token]);
+
   return (
     <AppContext.Provider
       value={{
@@ -137,7 +147,6 @@ const getOrder = async () => {
         login,
         setLogin,
         user,
-        setUser,
         address,
         setAddress,
         error,
@@ -150,7 +159,8 @@ const getOrder = async () => {
         order,
         getOrder,
         orderLoading,
-        orderError
+        orderError,
+        totalItems,
       }}
     >
       {children}

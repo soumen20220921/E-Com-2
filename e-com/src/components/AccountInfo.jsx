@@ -51,7 +51,7 @@ export const AccountInfo = () => {
       </div>
 
       {/* Footer Welcome Section */}
-      <div className="mt-6 sm:mt-8 p-4 sm:p-5 bg-indigo-50 rounded-2xl shadow-inner hover:scale-[1.01] transition-transform duration-500">
+      <div className="mt-6 sm:mt-8 p-4 sm:p-5 bg-indigo-50 rounded-2xl shadow-inner hover:scale-[1.01] transition-transform duration-500 animate-bounce">
         <p className="text-indigo-700 text-sm sm:text-base font-medium text-center sm:text-left">
           Welcome back,{" "}
           <span className="font-bold">{userName || "User"}</span>!  

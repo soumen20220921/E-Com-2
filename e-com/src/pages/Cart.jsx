@@ -9,18 +9,29 @@ import {
 } from "lucide-react";
 import { useAppContext } from "../context/AppContext";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import "./ToastStyles.css";
 import { useState } from "react";
-import ImportantNotice from "./ImportantNotice"; 
-
+import ImportantNotice from "./ImportantNotice";
+import { CheckCircle, XCircle, AlertCircle, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Cart = () => {
   const navigate = useNavigate();
   const { cart, getCart, token, address, user } = useAppContext();
   const [showAddressWarning, setShowAddressWarning] = useState(false);
   const [loadingPayment, setLoadingPayment] = useState(false);
+
+  const [notification, setNotification] = useState({
+    message: '',
+    type: '',
+    visible: false,
+  });
+
+  const showNotification = (message, type) => {
+    setNotification({ message, type, visible: true });
+    setTimeout(() => {
+      setNotification((prev) => ({ ...prev, visible: false }));
+    }, 3000); 
+  };
 
   const total = cart?.reduce((sum, item) => sum + item.price, 0) || 0;
   const totalItems = cart?.reduce((acc, item) => acc + item.qty, 0);
@@ -41,8 +52,9 @@ const Cart = () => {
               { headers: { Auth: token } }
             );
             getCart();
-            toast.error(
-              `${cart[i].title} removed - only ${response.data.product.stock} left in stock`
+            showNotification(
+              `${cart[i].title} removed - only ${response.data.product.stock} left in stock`,
+              'error'
             );
           }
         }
@@ -52,7 +64,7 @@ const Cart = () => {
       }
     } catch (error) {
       console.log("Error checking product availability", error);
-      toast.error("Error checking product availability");
+      showNotification("Error checking product availability", 'error');
       return false;
     }
   };
@@ -65,10 +77,10 @@ const Cart = () => {
         { headers: { Auth: token } }
       );
       getCart();
-      toast.success("Item removed from cart successfully!");
+      showNotification("Item removed from cart successfully!", 'success');
     } catch (error) {
       console.error("Error removing item from cart:", error);
-      toast.error("Failed to remove item");
+      showNotification("Failed to remove item", 'error');
     }
   };
 
@@ -94,17 +106,17 @@ const Cart = () => {
             data
           );
           if (orderResponse?.data?.redirectUrl) {
-            toast.info("Redirecting to PhonePe...");
+            showNotification("Redirecting to PhonePe...", 'warning');
             window.location.href = orderResponse.data.redirectUrl;
           } else {
-            toast.warn("Redirecting user to PhonePe payment page...");
+            showNotification("Redirecting user to PhonePe payment page...", 'warning');
           }
         } else {
-          toast.error("Some products are unavailable. Please refresh your cart.");
+          showNotification("Some products are unavailable. Please refresh your cart.", 'error');
         }
       } catch (error) {
         console.error("Error in handlePayment:", error);
-        toast.error("Payment failed. Try again later.");
+        showNotification("Payment failed. Try again later.", 'error');
         navigate("/failure");
       } finally {
         setLoadingPayment(false);
@@ -139,6 +151,48 @@ const Cart = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 font-inter py-6 sm:py-8">
+      <AnimatePresence>
+        {notification.visible && (
+          <motion.div
+            initial={{ y: -100, opacity: 0 }}
+            animate={{ y: 16, opacity: 1 }}
+            exit={{ y: -100, opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="fixed top-4 inset-x-0 z-50 flex justify-center px-4 sm:px-6"
+          >
+            <div
+              className={`w-full max-w-[95%] sm:max-w-sm md:max-w-md lg:max-w-lg relative flex items-center gap-3 p-3 sm:p-4 rounded-xl shadow-lg border-l-4
+                ${notification.type === "success" ? "bg-green-50 border-green-400" : ""}
+                ${notification.type === "error" ? "bg-red-50 border-red-400" : ""}
+                ${notification.type === "warning" ? "bg-yellow-50 border-yellow-400" : ""}
+              `}
+            >
+              <div className="flex-shrink-0">
+                {notification.type === "success" && <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-green-500" />}
+                {notification.type === "error" && <XCircle className="h-5 w-5 sm:h-6 sm:w-6 text-red-500" />}
+                {notification.type === "warning" && <AlertCircle className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-500" />}
+              </div>
+
+              <div className="flex-1">
+                <p className="text-sm sm:text-base font-medium text-gray-900 break-words">
+                  {notification.message}
+                </p>
+              </div>
+
+              {/* Close Button */}
+              <div className="flex-shrink-0">
+                <motion.button
+                  onClick={() => setNotification({ ...notification, visible: false })}
+                  whileHover={{ rotate: 90 }}
+                  className="p-1 rounded-full text-gray-500 hover:bg-gray-100"
+                >
+                  <X className="h-4 w-4 sm:h-5 sm:w-5" />
+                </motion.button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-8 text-center sm:text-left animate-fadeIn">
           🛒 Shopping Cart
@@ -260,14 +314,6 @@ const Cart = () => {
           </div>
         </div>
       </div>
-
-      <ToastContainer
-        position="bottom-right"
-        theme="dark"
-        autoClose={2000}
-        hideProgressBar
-        pauseOnHover
-      />
     </div>
   );
 };

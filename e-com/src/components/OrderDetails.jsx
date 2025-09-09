@@ -21,9 +21,9 @@ const OrderDetails = ({ order, onClose }) => {
       return { status: "Shipped", color: "blue", step: 3 };
     }
     if (order.orderAccept) {
-      return { status: "Accepted", color: "yellow", step: 2 };
+      return { status: "Accepted", color: "green", step: 2 };
     }
-    return { status: "Placed", color: "gray", step: 1 };
+    return { status: "Placed", color: "purple", step: 1 };
   };
 
   const { status, color, step } = getStatusInfo();

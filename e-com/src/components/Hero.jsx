@@ -100,8 +100,8 @@ export default function Hero() {
                 <div className="text-center">
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">Premium Headphones</h3>
                   <div className="flex items-center justify-center space-x-2 mb-2">
-                    <span className="text-2xl font-bold text-blue-600">$299.99</span>
-                    <span className="text-gray-500 line-through">$399.99</span>
+                    <span className="text-2xl font-bold text-blue-600">₹1299.99</span>
+                    <span className="text-gray-500 line-through">₹2399.99</span>
                   </div>
                   <div className="flex items-center justify-center">
                     {[...Array(5)].map((_, i) => (

@@ -11,7 +11,7 @@ import { useAppContext } from "../context/AppContext";
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
-  const { login, setLogin } = useAppContext();
+  const { login, setLogin, totalItems } = useAppContext(); // <-- Get totalItems from context
   const navigate = useNavigate();
   const userName = localStorage.getItem("name");
 
@@ -65,10 +65,15 @@ const Navbar = () => {
           <li>
             <button
               onClick={() => handleNavigation("/cart")}
-              className="flex items-center gap-1 px-4 py-2 rounded-full bg-green-100 text-green-700 hover:bg-green-200 transition-all duration-300"
+              className="relative flex items-center gap-1 px-4 py-2 rounded-full bg-green-100 text-green-700 hover:bg-green-200 transition-all duration-300"
             >
               <AiOutlineShopping size={20} />
               <span className="text-sm font-medium">Cart</span>
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 flex items-center justify-center h-6 w-6 rounded-full bg-orange-600 text-white text-xs font-bold shadow-md animate-bounce">
+                  {totalItems}
+                </span>
+              )}
             </button>
           </li>
           <li>
@@ -171,10 +176,15 @@ const Navbar = () => {
             <button
               type="button"
               onClick={() => handleNavigation("/cart")}
-              className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-gradient-to-r from-green-100 to-green-50 transition-all duration-300"
+              className="relative flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-gradient-to-r from-green-100 to-green-50 transition-all duration-300"
             >
               <AiOutlineShopping size={20} className="text-green-500" />
               <span className="text-base font-medium">Cart</span>
+              {totalItems > 0 && (
+                <span className="ml-auto flex items-center justify-center min-h-[28px] min-w-[28px] p-1 rounded-full bg-purple-600 text-white text-sm font-bold shadow-lg transform transition-transform duration-300 group-hover:scale-110">
+                  {totalItems}
+                </span>
+              )}
             </button>
           </li>
           {!login && (

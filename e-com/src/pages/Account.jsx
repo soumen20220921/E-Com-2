@@ -116,7 +116,7 @@ const Account = () => {
 
           {/* Content Area */}
           <div className="flex-1">
-            <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-xl p-6 animate-slide-up transition-all duration-500">
+            <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
               {comp === 1 && <AccountInfo />}
               {comp === 2 && <AddressInfo />}
               {comp === 3 && <OrderInfo />}
