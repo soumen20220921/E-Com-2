@@ -39,6 +39,7 @@ export const addProductWithImages = async (req, res) => {
       category,
       subCategory,
       stock,
+      hotSell,
       description,
       specification,
     } = req.body;
@@ -72,6 +73,7 @@ export const addProductWithImages = async (req, res) => {
       category,
       subCategory,
       stock,
+      hotSell,
       description,
       specification,
       images: imageIds,

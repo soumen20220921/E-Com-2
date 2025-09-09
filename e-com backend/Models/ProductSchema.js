@@ -7,6 +7,7 @@ const productSchema = new mongoose.Schema({
   category: { type: String, required: true }, // formData.category
   subCategory: { type: String, required: true }, // formData.subCategory
   stock: { type: Number, required: true }, // formData.stock
+  hotSell: { type: Boolean}, // formData.stock
   description: { type: String, required: true }, // formData.description
   specification: { type: String, required: true }, // formData.specification
   images: [

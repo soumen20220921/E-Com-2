@@ -83,6 +83,7 @@ const AddProduct = () => {
     category: "",
     subCategory: "",
     stock: "",
+    hotSell: false,
     description: "",
     specification: "",
     images: [null, null],
@@ -101,7 +102,7 @@ const AddProduct = () => {
     "acceceries",
     "home decor",
   ];
-
+  const hotSell = ["true", "false"];
   const subCategories = [
     "all saree",
     "pure silk",
@@ -162,7 +163,7 @@ const AddProduct = () => {
     e.preventDefault();
     setIsLoading(true);
     setNotification(null);
-
+    const hotSellValue = formData.hotSell === "true" ? true : false;
     const sendData = new FormData();
     sendData.append("productName", formData.productName);
     sendData.append("price", formData.price);
@@ -170,6 +171,7 @@ const AddProduct = () => {
     sendData.append("category", formData.category);
     sendData.append("subCategory", formData.subCategory);
     sendData.append("stock", formData.stock);
+    sendData.append("hotSell", hotSellValue);
     sendData.append("description", formData.description);
     sendData.append("specification", formData.specification);
 
@@ -231,9 +233,7 @@ const AddProduct = () => {
           </svg>
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
-            Add New Product 
-          </h1>
+          <h1 className="text-2xl font-bold text-gray-900">Add New Product</h1>
           <p className="text-gray-600 text-sm">
             Create and preview your product listing
           </p>
@@ -375,6 +375,26 @@ const AddProduct = () => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     required
                   />
+                </div>
+                {/* hot sell */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Hot Sell <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    name="hotSell"
+                    value={formData.hotSell}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    required
+                  >
+                    <option value="">Select</option>
+                    {hotSell.map((cat, i) => (
+                      <option key={i} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 {/* Category */}
                 <div>

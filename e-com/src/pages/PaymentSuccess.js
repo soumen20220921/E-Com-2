@@ -4,13 +4,17 @@ import { FaCheckCircle, FaStar } from "react-icons/fa";
 import { FaHouseChimney } from "react-icons/fa6";
 import { AiOutlineFileDone } from "react-icons/ai";
 import { motion } from "framer-motion";
+import { useAppContext } from "../context/AppContext";
+import axios from "axios";
 
 const PaymentConfirmationPage = () => {
+  const {getCart,token} = useAppContext();
   const [rating, setRating] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
+     clearcart();
   }, []);
 
   const goToHome = () => navigate("/");
@@ -52,7 +56,20 @@ const PaymentConfirmationPage = () => {
       transition: { duration: 5, repeat: Infinity, ease: "easeInOut" }
     }
   };
-
+  const clearcart = async () => {
+    try {
+      
+      await axios.delete(`http://localhost:8000/api/cart/clearCart`, {
+          headers: {
+            Auth: token,
+          },
+        });
+      getCart();
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+ 
   return (
     <div className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-amber-50 via-white to-yellow-100 font-sans overflow-hidden">
       <motion.div

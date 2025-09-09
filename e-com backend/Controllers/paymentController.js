@@ -118,10 +118,10 @@ export const checkStatus = async (req, res) => {
             return;
           }
 
-          const newQty = (Number(product.Quantity) || 0) - qty;
+          const newQty = (Number(product.stock) || 0) - qty;
           await Product.findByIdAndUpdate(
             objectId,
-            { Quantity: newQty },
+            { stock: newQty },
             { new: true }
           );
         } catch (error) {

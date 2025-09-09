@@ -4,9 +4,10 @@ import { useCallback, useState, useMemo } from "react";
 import ViewProduct from "./ViewProduct";
 import EditProduct from "./EditProduct";
 import DeleteModal from "./DeleteModal";
+import axios from "axios";
 
 const Product = () => {
-  const { setTab, allProduct, deleteProduct, editProduct } = useAppContext();
+  const { setTab, allProduct,getProduct } = useAppContext();
   const [searchTerm, setSearchTerm] = useState("");
   const [currentView, setCurrentView] = useState("list");
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -39,8 +40,7 @@ const Product = () => {
     }
   };
 
-  const handleSaveEdit = (updatedProduct) => {
-    editProduct(updatedProduct);
+  const handleSaveEdit = () => {
     setCurrentView("list");
     setSelectedProduct(null);
   };
@@ -49,7 +49,15 @@ const Product = () => {
     setCurrentView("list");
     setSelectedProduct(null);
   };
-
+// delete product function
+  const deleteProduct = async (productId) => {
+    try {
+      await axios.delete(`http://localhost:8000/api/product/${productId}`);
+      getProduct();
+    } catch (error) {
+      console.error("Error deleting product: " + error.message);
+    }
+  };
   const filteredProducts = useMemo(() => {
     if (!searchTerm) return allProduct;
     return allProduct.filter((product) =>
@@ -218,7 +226,7 @@ const Product = () => {
 
         {showDeleteModal && (
           <DeleteModal
-            productName={selectedProduct?.productName}
+            productId={selectedProduct?._id}
             onConfirm={handleConfirmDelete}
             onCancel={() => setShowDeleteModal(false)}
           />

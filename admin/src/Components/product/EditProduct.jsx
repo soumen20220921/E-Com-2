@@ -1,6 +1,7 @@
 import { ArrowLeft, X } from "lucide-react";
 import { useState } from "react";
 import axios from "axios";
+import { useAppContext } from "../../context/Context";
 
 const Notification = ({ message, type, onClose }) => {
   const bgColor =
@@ -58,6 +59,7 @@ const Notification = ({ message, type, onClose }) => {
 };
 
 const EditProduct = ({ product, onSave, onCancel }) => {
+  const { getProduct } = useAppContext();
   const [formData, setFormData] = useState({
     productName: product.productName,
     price: product.price,
@@ -65,6 +67,7 @@ const EditProduct = ({ product, onSave, onCancel }) => {
     category: product.category,
     subCategory: product.subCategory,
     stock: product.stock,
+    hotSell:product.hotSell,
     description: product.description,
     specification: product.specification,
     images: [null, null],
@@ -82,6 +85,7 @@ const EditProduct = ({ product, onSave, onCancel }) => {
     "acceceries",
     "home decor",
   ];
+  const hotSell = ["true", "false"];
   const subCategories = [
     "all saree",
     "pure silk",
@@ -106,69 +110,59 @@ const EditProduct = ({ product, onSave, onCancel }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleImageChange = (e, index) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData((prev) => {
-        const newImages = [...prev.images];
-        const newImageUrls = [...prev.imageUrls];
-        newImages[index] = file;
-        newImageUrls[index] = URL.createObjectURL(file);
-        return { ...prev, images: newImages, imageUrls: newImageUrls };
-      });
-    }
-  };
+  // const handleImageChange = (e, index) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     setFormData((prev) => {
+  //       const newImages = [...prev.images];
+  //       const newImageUrls = [...prev.imageUrls];
+  //       newImages[index] = file;
+  //       newImageUrls[index] = URL.createObjectURL(file);
+  //       return { ...prev, images: newImages, imageUrls: newImageUrls };
+  //     });
+  //   }
+  // };
 
-  const handleRemoveImage = (index) => {
-    setFormData((prev) => {
-      const newImages = [...prev.images];
-      const newImageUrls = [...prev.imageUrls];
-      newImages[index] = null;
-      newImageUrls[index] = null;
-      return { ...prev, images: newImages, imageUrls: newImageUrls };
-    });
-  };
+  // const handleRemoveImage = (index) => {
+  //   setFormData((prev) => {
+  //     const newImages = [...prev.images];
+  //     const newImageUrls = [...prev.imageUrls];
+  //     newImages[index] = null;
+  //     newImageUrls[index] = null;
+  //     return { ...prev, images: newImages, imageUrls: newImageUrls };
+  //   });
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setNotification(null);
-
-    const updatedData = new FormData();
-    updatedData.append("productName", formData.productName);
-    updatedData.append("price", formData.price);
-    updatedData.append("originalPrice", formData.originalPrice);
-    updatedData.append("category", formData.category);
-    updatedData.append("subCategory", formData.subCategory);
-    updatedData.append("stock", formData.stock);
-    updatedData.append("description", formData.description);
-    updatedData.append("specification", formData.specification);
-    updatedData.append("existingImages", JSON.stringify(product.images));
-
-    formData.images.forEach((file, index) => {
-      if (file) {
-        updatedData.append(`image${index}`, file);
-      } else {
-        if (product.images[index]) {
-          updatedData.append(`removeImage${index}`, "true");
-        }
-      }
-    });
+const hotSellValue = formData.hotSell === "true" ? true : false;
+    const updatedData = {
+      productName: formData.productName,
+      price: formData.price,
+      originalPrice: formData.originalPrice,
+      category: formData.category,
+      subCategory: formData.subCategory,
+      stock: formData.stock,
+      hotSell:hotSellValue,
+      description: formData.description,
+      specification: formData.specification,
+    };
 
     try {
-      const res = await axios.patch(
-        `http://localhost:8000/api/product/updateProduct/${product._id}`,
-        updatedData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
+      const res = await axios.put(
+        `http://localhost:8000/api/product/${product._id}`,
+        updatedData, // send JSON
+        { headers: { "Content-Type": "application/json" } }
       );
 
       setNotification({
         message: res.data.message || "Product updated successfully!",
         type: "success",
       });
-      onSave(res.data.data);
+      onSave(res.data.product);
+      getProduct();
     } catch (err) {
       console.error(err.response?.data || err.message);
       setNotification({
@@ -203,7 +197,7 @@ const EditProduct = ({ product, onSave, onCancel }) => {
         className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 lg:p-8 space-y-10 transition-transform hover:scale-[1.01]"
       >
         {/* Product Images */}
-        <div>
+        {/* <div>
           <h2 className="text-lg font-semibold text-gray-800 mb-4">
             Product Images
           </h2>
@@ -243,7 +237,7 @@ const EditProduct = ({ product, onSave, onCancel }) => {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
         <hr className="border-gray-200" />
 
@@ -379,6 +373,26 @@ const EditProduct = ({ product, onSave, onCancel }) => {
                 placeholder="0"
                 required
               />
+            </div>
+            {/* hot sell */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Hot Sell <span className="text-red-500">*</span>
+              </label>
+              <select
+                name="hotSell"
+                value={formData.hotSell}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Select</option>
+                {hotSell.map((cat, i) => (
+                  <option key={i} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
         </div>
