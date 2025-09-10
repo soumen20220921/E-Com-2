@@ -1,55 +1,56 @@
-import { ArrowLeft, X } from "lucide-react";
-import { useState } from "react";
+import { X, CheckCircle, Info, AlertCircle } from "lucide-react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAppContext } from "../../context/Context";
+import { Loader2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 const Notification = ({ message, type, onClose }) => {
-  const bgColor =
-    type === "success"
-      ? "bg-green-50 border-green-400 text-green-700"
-      : "bg-red-50 border-red-400 text-red-700";
-  const iconColor = type === "success" ? "text-green-500" : "text-red-500";
+  let bgColor, icon, title;
+
+  switch (type) {
+    case "success":
+      bgColor = "bg-green-500";
+      icon = <CheckCircle className="w-6 h-6 text-white" />;
+      title = "Success!";
+      break;
+    case "error":
+      bgColor = "bg-red-500";
+      icon = <AlertCircle className="w-6 h-6 text-white" />;
+      title = "Error!";
+      break;
+    case "info":
+      bgColor = "bg-blue-500";
+      icon = <Info className="w-6 h-6 text-white" />;
+      title = "Information";
+      break;
+    default:
+      bgColor = "bg-gray-500";
+      icon = <Info className="w-6 h-6 text-white" />;
+      title = "Notification";
+  }
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose();
+    }, 4000);
+    return () => clearTimeout(timer);
+  }, [onClose]);
 
   return (
     <div
-      className={`fixed top-6 right-6 p-4 rounded-xl shadow-xl border-l-4 ${bgColor} transition-all duration-500 animate-fade-in z-50`}
+      className={`fixed bottom-6 right-6 p-4 rounded-xl shadow-2xl transition-all duration-500 animate-slide-in-right z-[100] transform ${bgColor}`}
     >
-      <div className="flex items-center">
-        <div className={`mr-3 ${iconColor}`}>
-          {type === "success" ? (
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          ) : (
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          )}
+      <div className="flex items-start space-x-4">
+        <div className="flex-shrink-0">{icon}</div>
+        <div className="flex-1">
+          <p className="font-bold text-white text-base leading-snug">{title}</p>
+          <p className="text-white text-sm mt-1">{message}</p>
         </div>
-        <p className="font-semibold">{message}</p>
         <button
           onClick={onClose}
-          className="ml-auto text-gray-500 hover:text-gray-700 transition-colors"
+          className="ml-auto text-white/80 hover:text-white transition-colors self-start p-1 -m-1"
+          aria-label="Close notification"
         >
           <X className="w-5 h-5" />
         </button>
@@ -57,6 +58,7 @@ const Notification = ({ message, type, onClose }) => {
     </div>
   );
 };
+// --- End of new Notification component ---
 
 const EditProduct = ({ product, onSave, onCancel }) => {
   const { getProduct } = useAppContext();
@@ -67,11 +69,11 @@ const EditProduct = ({ product, onSave, onCancel }) => {
     category: product.category,
     subCategory: product.subCategory,
     stock: product.stock,
-    hotSell:product.hotSell,
+    hotSell: product.hotSell,
     description: product.description,
     specification: product.specification,
     images: [null, null],
-    imageUrls: product.images.map((img) => `http://localhost:8000/img/${img}`),
+    imageUrl: product.images.map((img) => `http://localhost:8000/img/${img}`),
   });
   const [isLoading, setIsLoading] = useState(false);
   const [notification, setNotification] = useState(null);
@@ -85,7 +87,7 @@ const EditProduct = ({ product, onSave, onCancel }) => {
     "acceceries",
     "home decor",
   ];
-  const hotSell = ["true", "false"];
+  const hotSellOptions = ["true", "false"];
   const subCategories = [
     "all saree",
     "pure silk",
@@ -110,34 +112,27 @@ const EditProduct = ({ product, onSave, onCancel }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // const handleImageChange = (e, index) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     setFormData((prev) => {
-  //       const newImages = [...prev.images];
-  //       const newImageUrls = [...prev.imageUrls];
-  //       newImages[index] = file;
-  //       newImageUrls[index] = URL.createObjectURL(file);
-  //       return { ...prev, images: newImages, imageUrls: newImageUrls };
-  //     });
-  //   }
-  // };
+  const showNotification = (type) => {
+  const messages = {
+    success: "Product updated successfully.",
+    error: "Failed to update product. Please try again.",
+    info: "Product edit canceled.",
+  };
+  setNotification({ type, message: messages[type] });
+};
 
-  // const handleRemoveImage = (index) => {
-  //   setFormData((prev) => {
-  //     const newImages = [...prev.images];
-  //     const newImageUrls = [...prev.imageUrls];
-  //     newImages[index] = null;
-  //     newImageUrls[index] = null;
-  //     return { ...prev, images: newImages, imageUrls: newImageUrls };
-  //   });
-  // };
+  const handleCancel = () => {
+    // Show a notification for a canceled edit
+    showNotification("info", "Product edit canceled.");
+    setTimeout(() => {
+      onCancel();
+    }, 1200); // Give the user time to see the notification
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setNotification(null);
-const hotSellValue = formData.hotSell === "true" ? true : false;
+    const hotSellValue = formData.hotSell === "true";
     const updatedData = {
       productName: formData.productName,
       price: formData.price,
@@ -145,35 +140,34 @@ const hotSellValue = formData.hotSell === "true" ? true : false;
       category: formData.category,
       subCategory: formData.subCategory,
       stock: formData.stock,
-      hotSell:hotSellValue,
+      hotSell: hotSellValue,
       description: formData.description,
       specification: formData.specification,
     };
 
     try {
-      const res = await axios.put(
+      await axios.put(
         `http://localhost:8000/api/product/${product._id}`,
-        updatedData, // send JSON
+        updatedData,
         { headers: { "Content-Type": "application/json" } }
       );
 
-      setNotification({
-        message: res.data.message || "Product updated successfully!",
-        type: "success",
-      });
-      onSave(res.data.product);
-      getProduct();
+      // Show a success notification
+      showNotification("success", "Product updated successfully! 🎉");
+      // Delay the onSave call to allow the user to see the notification
+      setTimeout(() => {
+        onSave();
+        getProduct();
+      }, 1500);
     } catch (err) {
       console.error(err.response?.data || err.message);
-      setNotification({
-        message:
-          err.response?.data?.message ||
-          "Error occurred while updating product",
-        type: "error",
-      });
+      // Show an error notification
+      showNotification(
+        "error",
+        err.response?.data?.message || "Error occurred while updating product 😔"
+      );
     } finally {
       setIsLoading(false);
-      setTimeout(() => setNotification(null), 3000);
     }
   };
 
@@ -196,49 +190,6 @@ const hotSellValue = formData.hotSell === "true" ? true : false;
         onSubmit={handleSubmit}
         className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 lg:p-8 space-y-10 transition-transform hover:scale-[1.01]"
       >
-        {/* Product Images */}
-        {/* <div>
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">
-            Product Images
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {[0, 1].map((index) => (
-              <div key={index}>
-                <label className="h-40 border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center hover:border-blue-500 hover:bg-blue-50 transition-colors text-gray-500 hover:text-blue-600 cursor-pointer relative overflow-hidden group">
-                  {formData.imageUrls[index] ? (
-                    <>
-                      <img
-                        src={formData.imageUrls[index]}
-                        alt={`Product ${index + 1}`}
-                        className="object-cover w-full h-full rounded-lg transition-transform duration-500 group-hover:scale-105"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveImage(index)}
-                        className="absolute top-2 right-2 p-1 bg-white rounded-full shadow-md text-gray-500 hover:text-red-500 transition-colors"
-                      >
-                        <X className="w-5 h-5" />
-                      </button>
-                    </>
-                  ) : (
-                    <input
-                      type="file"
-                      className="hidden"
-                      accept="image/*"
-                      onChange={(e) => handleImageChange(e, index)}
-                    />
-                  )}
-                  {!formData.imageUrls[index] && (
-                    <span className="absolute text-sm font-medium">
-                      Upload Image {index + 1}
-                    </span>
-                  )}
-                </label>
-              </div>
-            ))}
-          </div>
-        </div> */}
-
         <hr className="border-gray-200" />
 
         {/* Product Details */}
@@ -265,48 +216,43 @@ const hotSellValue = formData.hotSell === "true" ? true : false;
                 required
               />
             </div>
-
             <div>
               <label
                 htmlFor="price"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Price (₹) <span className="text-red-500">*</span>
+                Price <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
                 id="price"
                 name="price"
-                step="0.01"
-                min="0"
                 value={formData.price}
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="0.00"
+                placeholder="Enter price"
                 required
               />
             </div>
-
             <div>
               <label
                 htmlFor="originalPrice"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Original Price (₹)
+                Original Price
               </label>
               <input
                 type="number"
                 id="originalPrice"
                 name="originalPrice"
-                step="0.01"
-                min="0"
                 value={formData.originalPrice}
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="0.00"
+                placeholder="Enter original price (if on discount)"
               />
             </div>
 
+            {/* Category and Subcategory */}
             <div>
               <label
                 htmlFor="category"
@@ -322,15 +268,14 @@ const hotSellValue = formData.hotSell === "true" ? true : false;
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 required
               >
-                <option value="">Select category</option>
-                {categories.map((cat, idx) => (
-                  <option key={idx} value={cat}>
-                    {cat}
+                <option value="">Select a category</option>
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat.charAt(0).toUpperCase() + cat.slice(1)}
                   </option>
                 ))}
               </select>
             </div>
-
             <div>
               <label
                 htmlFor="subCategory"
@@ -346,66 +291,57 @@ const hotSellValue = formData.hotSell === "true" ? true : false;
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 required
               >
-                <option value="">Select sub category</option>
-                {subCategories.map((sub, idx) => (
-                  <option key={idx} value={sub}>
-                    {sub}
+                <option value="">Select a sub-category</option>
+                {subCategories.map((subCat) => (
+                  <option key={subCat} value={subCat}>
+                    {subCat.charAt(0).toUpperCase() + subCat.slice(1)}
                   </option>
                 ))}
               </select>
             </div>
 
+            {/* Stock and Hot Sell */}
             <div>
               <label
                 htmlFor="stock"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Stock Quantity <span className="text-red-500">*</span>
+                Stock <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
                 id="stock"
                 name="stock"
-                min="0"
                 value={formData.stock}
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="0"
+                placeholder="Enter stock quantity"
                 required
               />
             </div>
-            {/* hot sell */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Hot Sell <span className="text-red-500">*</span>
+              <label
+                htmlFor="hotSell"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Hot Sell
               </label>
               <select
+                id="hotSell"
                 name="hotSell"
-                value={formData.hotSell}
+                value={formData.hotSell ? "true" : "false"}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
-                <option value="">Select</option>
-                {hotSell.map((cat, i) => (
-                  <option key={i} value={cat}>
-                    {cat}
+                {hotSellOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option.charAt(0).toUpperCase() + option.slice(1)}
                   </option>
                 ))}
               </select>
             </div>
-          </div>
-        </div>
-
-        <hr className="border-gray-200" />
-
-        {/* Description & Specifications */}
-        <div>
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">
-            Description & Specifications
-          </h2>
-          <div className="grid grid-cols-1 gap-6">
-            <div>
+            {/* Description and Specification */}
+            <div className="md:col-span-2">
               <label
                 htmlFor="description"
                 className="block text-sm font-medium text-gray-700 mb-2"
@@ -414,60 +350,64 @@ const hotSellValue = formData.hotSell === "true" ? true : false;
               </label>
               <textarea
                 id="description"
-                rows={4}
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter product description"
+                placeholder="Write a detailed description of the product"
+                rows="4"
                 required
-              />
+              ></textarea>
             </div>
-
-            <div>
+            <div className="md:col-span-2">
               <label
                 htmlFor="specification"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Specification <span className="text-red-500">*</span>
+                Specification
               </label>
               <textarea
                 id="specification"
-                rows={4}
                 name="specification"
                 value={formData.specification}
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter product specifications"
-                required
-              />
+                placeholder="Enter product specifications (e.g., materials, dimensions)"
+                rows="4"
+              ></textarea>
             </div>
           </div>
         </div>
 
-        {/* Actions */}
-        <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4 pt-6 border-t border-gray-200">
           <button
             type="button"
-            onClick={onCancel}
-            className="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            onClick={handleCancel}
+            className="px-6 py-3 rounded-xl text-gray-700 bg-gray-200 hover:bg-gray-300 transition-colors font-semibold"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg shadow-md hover:from-blue-600 hover:to-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isLoading}
+            className={`px-6 py-3 rounded-xl text-white font-semibold flex items-center justify-center transition-colors ${
+              isLoading
+                ? "bg-blue-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
+            }`}
           >
-            {isLoading ? "Saving..." : "Save Changes"}
+            {isLoading && <Loader2 className="animate-spin h-5 w-5 mr-2" />}
+            Save Changes
           </button>
         </div>
       </form>
 
+      {/* Render the new notification component */}
       {notification && (
         <Notification
-          message={notification.message}
           type={notification.type}
+          message={notification.message}
           onClose={() => setNotification(null)}
         />
       )}

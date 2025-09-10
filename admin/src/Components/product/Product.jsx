@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import {
   Plus,
   Search,
@@ -8,6 +8,8 @@ import {
   Eye,
   Package,
   Flame,
+  CheckCircle,
+  XCircle,
 } from "lucide-react";
 import { useAppContext } from "../../context/Context";
 import ViewProduct from "./ViewProduct";
@@ -15,6 +17,56 @@ import EditProduct from "./EditProduct";
 import DeleteModal from "./DeleteModal";
 import axios from "axios";
 
+// New, full-screen Notification component
+const Notification = ({ message, type, onClose }) => {
+  // Determine the color scheme and icon based on the notification type
+  const isSuccess = type === "success";
+  const icon = isSuccess ? (
+    <CheckCircle className="h-16 w-16 text-green-400" />
+  ) : (
+    <XCircle className="h-16 w-16 text-red-400" />
+  );
+  const title = isSuccess ? "Mission Complete!" : "Something Went Wrong!";
+  const buttonBg = isSuccess ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700";
+
+  // Auto-close after 4 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose();
+    }, 4000);
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black bg-opacity-70 backdrop-blur-sm animate-fade-in">
+      <div className="relative overflow-hidden w-full max-w-md p-8 bg-white rounded-3xl shadow-2xl transform transition-transform duration-300 ease-out animate-scale-in-vibrant">
+        {/* Background Gradients for Visual Appeal */}
+        <div className="absolute inset-0 opacity-20">
+          <div className={`w-3/4 h-3/4 absolute -top-1/4 -right-1/4 rounded-full ${isSuccess ? 'bg-green-200' : 'bg-red-200'} blur-2xl animate-spin-slow`}></div>
+          <div className={`w-2/3 h-2/3 absolute -bottom-1/4 -left-1/4 rounded-full ${isSuccess ? 'bg-blue-200' : 'bg-yellow-200'} blur-2xl animate-pulse`}></div>
+        </div>
+
+        {/* Content */}
+        <div className="relative text-center space-y-6">
+          <div className="mx-auto flex justify-center">{icon}</div>
+          <h3 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+            {title}
+          </h3>
+          <p className="text-gray-600 text-lg leading-relaxed">{message}</p>
+          <button
+            onClick={onClose}
+            className={`w-full py-3 text-lg font-bold rounded-xl text-white ${buttonBg} transition-all duration-300 transform active:scale-95 shadow-lg hover:shadow-xl`}
+          >
+            Acknowledge
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
+// Main Product component
 const Product = () => {
   const { setTab, allProduct, getProduct } = useAppContext();
   const [searchTerm, setSearchTerm] = useState("");
@@ -22,6 +74,9 @@ const Product = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [filterStatus, setFilterStatus] = useState("all");
+
+  // State for the notification
+  const [notification, setNotification] = useState(null);
 
   const handleAddProduct = useCallback(() => {
     setTab(4);
@@ -42,9 +97,13 @@ const Product = () => {
     setShowDeleteModal(true);
   };
 
+  const showNotification = (message, type) => {
+    setNotification({ message, type });
+  };
+
   const handleConfirmDelete = () => {
     if (selectedProduct) {
-      deleteProduct(selectedProduct._id);
+      deleteProduct(selectedProduct._id, selectedProduct.productName);
       setShowDeleteModal(false);
       setSelectedProduct(null);
     }
@@ -53,6 +112,8 @@ const Product = () => {
   const handleSaveEdit = () => {
     setCurrentView("list");
     setSelectedProduct(null);
+    // You might want to add a success notification here too
+    showNotification("Product updated successfully! 🎉", "success");
   };
 
   const handleCancel = () => {
@@ -60,16 +121,17 @@ const Product = () => {
     setSelectedProduct(null);
   };
 
-  // Delete product function
-  const deleteProduct = async (productId) => {
+  // Delete product function with notification
+  const deleteProduct = async (productId, productName) => {
     try {
       await axios.delete(`http://localhost:8000/api/product/${productId}`);
-      getProduct();
+      getProduct(); // Refresh the product list
+      showNotification(`Product '${productName}' deleted successfully! 🎉`, "success");
     } catch (error) {
       console.error("Error deleting product:", error.message);
+      showNotification("Failed to delete product. Please try again.", "error");
     }
   };
-  
 
   // Memoized and filtered product list
   const filteredProducts = useMemo(() => {
@@ -302,7 +364,18 @@ const Product = () => {
     );
   };
 
-  return renderView();
+  return (
+    <>
+      {notification && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={() => setNotification(null)}
+        />
+      )}
+      {renderView()}
+    </>
+  );
 };
 
 export default Product;
