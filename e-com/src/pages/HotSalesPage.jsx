@@ -33,10 +33,10 @@ const HotSalesPage = () => {
       <section className="relative text-center py-12 sm:py-16 bg-gradient-to-r from-pink-100 via-red-100 to-yellow-100 shadow-lg">
         <div className="max-w-4xl mx-auto px-4">
           <h1 className="text-2xl whitespace-nowrap sm:text-4xl font-extrabold text-gray-900 flex items-center justify-center gap-3 animate-fade-in-up">
-            <Flame size={42} className="text-red-500 animate-fade-in " />
+            <Flame size={40} className="text-red-500 animate-fade-in " />
             Today’s Hot Picks
           </h1>
-          <p className="text-gray-600 mt-3 sm:mt-4 text-base sm:text-lg animate-fade-in delay-200">
+          <p className="text-gray-600 text-sm mt-3 sm:mt-4 text-base sm:text-lg animate-fade-in delay-200">
             Don’t miss out on these limited-time deals — grab them before they’re gone!
           </p>
         </div>

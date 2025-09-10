@@ -149,7 +149,7 @@ const MyOrders = () => {
             </div>
             <button
               onClick={() => setSelectedOrder(order)}
-              className="p-3 bg-white rounded-lg shadow hover:bg-gray-100 transition-colors transform hover:scale-105 duration-300"
+              className="p-3 bg-white animate-arrowMove rounded-lg shadow hover:bg-gray-100 transition-colors transform hover:scale-105 duration-300"
             >
               <ArrowRight className="w-5 h-5 text-indigo-600" />
             </button>

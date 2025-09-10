@@ -106,7 +106,7 @@ const Categories = () => {
     setSortBy("default");
     setStockStatus("all");
     setShowFilters(false);
-    setSelectedSubCategory("all"); // Reset subcategory filter
+    setSelectedSubCategory("all");
   };
 
   const handleApplyFilters = () => {

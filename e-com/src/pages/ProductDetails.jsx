@@ -177,7 +177,7 @@ const ProductDetails = () => {
 
   const faqs = [
     { q: "What is the warranty?", a:  " This product does not come with a manufacturer's warranty." },
-    { q: "How long to deliver?", a: "Usually 3-7 business days depending on your location." },
+    { q: "How long to deliver?", a: "Usually 5-7 business days depending on your location." },
     { q: "Can I return the product?", a: "Yes! We offer easy 7-day returns. If you're not satisfied, simply follow our returns process for a smooth refund or replacement." },
   ];
 
@@ -192,51 +192,61 @@ const ProductDetails = () => {
   );
 
   return (
-    
     <div className="min-h-screen bg-gray-50 font-inter">
-
-{notification.visible && (
-  <motion.div
-    initial={{ y: -100, opacity: 0 }}
-    animate={{ y: 16, opacity: 1 }}
-    exit={{ y: -100, opacity: 0 }}
-    transition={{ duration: 0.5 }}
-    className="fixed top-4 inset-x-0 z-50 flex justify-center px-4 sm:px-6"
-  >
-    <div
-      className={`w-full max-w-[95%] sm:max-w-sm md:max-w-md lg:max-w-lg relative flex items-center gap-3 p-3 sm:p-4 rounded-xl shadow-lg border-l-4
+      {notification.visible && (
+        <motion.div
+          initial={{ y: -100, opacity: 0 }}
+          animate={{ y: 16, opacity: 1 }}
+          exit={{ y: -100, opacity: 0 }}
+          transition={{ duration: 0.5 }}
+          className="fixed top-4 inset-x-0 z-50 flex justify-center px-4 sm:px-6"
+        >
+          <div
+            className={`w-full max-w-[95%] sm:max-w-sm md:max-w-md lg:max-w-lg relative flex items-center gap-3 p-3 sm:p-4 rounded-xl shadow-lg border-l-4
         ${notification.type === "success" ? "bg-green-50 border-green-400" : ""}
         ${notification.type === "error" ? "bg-red-50 border-red-400" : ""}
-        ${notification.type === "warning" ? "bg-yellow-50 border-yellow-400" : ""}
+        ${
+          notification.type === "warning"
+            ? "bg-yellow-50 border-yellow-400"
+            : ""
+        }
       `}
-    >
-      {/* Icon */}
-      <div className="flex-shrink-0">
-        {notification.type === "success" && <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-green-500" />}
-        {notification.type === "error" && <XCircle className="h-5 w-5 sm:h-6 sm:w-6 text-red-500" />}
-        {notification.type === "warning" && <AlertCircle className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-500" />}
-      </div>
+          >
+            {/* Icon */}
+            <div className="flex-shrink-0">
+              {notification.type === "success" && (
+                <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-green-500" />
+              )}
+              {notification.type === "error" && (
+                <XCircle className="h-5 w-5 sm:h-6 sm:w-6 text-red-500" />
+              )}
+              {notification.type === "warning" && (
+                <AlertCircle className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-500" />
+              )}
+            </div>
 
-      {/* Message */}
-      <div className="flex-1">
-        <p className="text-sm sm:text-base font-medium text-gray-900 break-words">
-          {notification.message}
-        </p>
-      </div>
+            {/* Message */}
+            <div className="flex-1">
+              <p className="text-sm sm:text-base font-medium text-gray-900 break-words">
+                {notification.message}
+              </p>
+            </div>
 
-      {/* Close Button */}
-      <div className="flex-shrink-0">
-        <motion.button
-          onClick={() => setNotification({ ...notification, visible: false })}
-          whileHover={{ rotate: 90 }}
-          className="p-1 rounded-full text-gray-500 hover:bg-gray-100"
-        >
-          <X className="h-4 w-4 sm:h-5 sm:w-5" />
-        </motion.button>
-      </div>
-    </div>
-  </motion.div>
-)}
+            {/* Close Button */}
+            <div className="flex-shrink-0">
+              <motion.button
+                onClick={() =>
+                  setNotification({ ...notification, visible: false })
+                }
+                whileHover={{ rotate: 90 }}
+                className="p-1 rounded-full text-gray-500 hover:bg-gray-100"
+              >
+                <X className="h-4 w-4 sm:h-5 sm:w-5" />
+              </motion.button>
+            </div>
+          </div>
+        </motion.div>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between">
@@ -283,7 +293,6 @@ const ProductDetails = () => {
                     className="   object-contain bg-white"
                   />
                 </AnimatePresence>
-               
               </div>
 
               {/* Thumbnails */}
@@ -376,7 +385,11 @@ const ProductDetails = () => {
                     About this product
                   </h3>
                   <div
-                    className={`text-gray-700 leading-relaxed transition-all duration-300  ${isExpanded ? '' : 'line-clamp-2 max-h-20 overflow-hidden relative'}`}
+                    className={`text-gray-700 leading-relaxed transition-all duration-300  ${
+                      isExpanded
+                        ? ""
+                        : "line-clamp-2 max-h-20 overflow-hidden relative"
+                    }`}
                   >
                     <p>{product.description || "No description available."}</p>
                     {!isExpanded &&
@@ -478,7 +491,10 @@ const ProductDetails = () => {
                     <button
                       onClick={() => {
                         navigator.clipboard?.writeText(window.location.href);
-                        showNotification("Link copied to clipboard!", 'success');
+                        showNotification(
+                          "Link copied to clipboard!",
+                          "success"
+                        );
                       }}
                       className="py-3 px-6 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-100 transition-colors"
                       aria-label="Copy product link"
@@ -488,7 +504,7 @@ const ProductDetails = () => {
                   </div>
                 </motion.div>
 
-                 {/* Trust badges */}
+                {/* Trust badges */}
                 <div className="mt-6 grid grid-cols-3 gap-2 text-center text-xs text-gray-600">
                   <div className="p-2 rounded-lg border flex flex-col items-center">
                     <Truck className="h-5 w-5" />
@@ -510,9 +526,10 @@ const ProductDetails = () => {
                     <Clock className="h-4 w-4" />
                     <span>Estimated delivery</span>
                   </div>
-                  <p className="text-xs text-gray-600 mt-2">5-7 business days to your location.</p>
+                  <p className="text-xs text-gray-600 mt-2">
+                    5-7 business days to your location.
+                  </p>
                 </div>
-
 
                 {/* Suggested bundle */}
                 <motion.div
@@ -521,12 +538,20 @@ const ProductDetails = () => {
                   transition={{ duration: 0.5, delay: 0.8 }}
                   className="mt-6 p-6 bg-gradient-to-br from-blue-50 via-white to-blue-50 border border-blue-100 rounded-3xl shadow-lg"
                 >
-                  <h4 className="text-sm font-semibold">Frequently bought together</h4>
+                  <h4 className="text-sm font-semibold">
+                    Frequently bought together
+                  </h4>
                   <div className="mt-3 flex items-center gap-3">
-                    <img src={images[0]} alt="mini" className="w-12 h-12 object-contain rounded-md bg-white p-1" />
+                    <img
+                      src={images[0]}
+                      alt="mini"
+                      className="w-12 h-12 object-contain rounded-md bg-white p-1"
+                    />
                     <div className="flex-1 text-sm">
                       <div className="font-medium">{product.productName}</div>
-                      <div className="text-xs text-gray-500">₹{product.price}</div>
+                      <div className="text-xs text-gray-500">
+                        ₹{product.price}
+                      </div>
                     </div>
                   </div>
                   {/* <button className="mt-3 w-full py-2 text-sm border rounded-lg">Add Bundle</button> */}
@@ -583,7 +608,7 @@ const ProductDetails = () => {
           {/* Detailed Tabs section */}
           <div className="mt-12 border-t pt-8">
             <div className="flex space-x-4 border-b overflow-x-auto">
-              {["highlights","specifications"].map((tab) => (
+              {["highlights", "specifications"].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -618,7 +643,6 @@ const ProductDetails = () => {
 
           {/* Reviews & FAQ Section */}
           <div className="mt-8">
-
             <div className="mt-6">
               <h4 className="text-lg font-semibold mb-2">
                 Frequently Asked Questions
@@ -656,25 +680,58 @@ const ProductDetails = () => {
 
           {/* Similar products compact row */}
           {similarProducts.length > 0 && (
-            <div className="mt-8">
-              <h2 className="text-2xl font-bold mb-4">Similar Products</h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                {similarProducts.slice(0, 6).map((item) => (
+            <div className="mt-10">
+              <h2 className="text-2xl sm:text-3xl font-extrabold mb-6 text-gray-900 text-center sm:text-left">
+                Similar Products
+              </h2>
+
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+                {similarProducts.slice(0, 4).map((item) => (
                   <motion.div
-                    whileHover={{ scale: 1.03 }}
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 200 }}
                     key={item._id}
-                    className="bg-white rounded-2xl shadow-md p-3 cursor-pointer hover:shadow-xl transition"
+                    className="relative bg-white rounded-2xl shadow-md hover:shadow-xl p-3 sm:p-4 cursor-pointer group overflow-hidden border border-gray-100 hover:border-pink-300 transition-all"
                     onClick={() => navigate(`/productDetails/${item._id}`)}
                   >
-                    <img
-                      src={`http://localhost:8000/img/${item.images[0]}`}
-                      alt={item.productName}
-                      className="w-full h-32 object-contain mb-2 rounded-lg"
-                    />
-                    <h3 className="font-semibold text-gray-800 truncate">
-                      {item.productName}
-                    </h3>
-                    <p className="text-blue-600 font-bold">₹{item.price}</p>
+                    {/* Product Image */}
+                    <div className="relative w-full h-32 sm:h-40 rounded-xl overflow-hidden flex items-center justify-center bg-gray-50">
+                      <img
+                        src={
+                          item.images?.[0]
+                            ? `http://localhost:8000/img/${item.images[0]}`
+                            : "https://placehold.co/200x200"
+                        }
+                        alt={item.productName}
+                        className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-110"
+                      />
+
+                      {/* Hover overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-60 transition-opacity duration-500"></div>
+                    </div>
+
+                    {/* Product Info */}
+                    <div className="mt-3 space-y-1">
+                      <h3 className="font-semibold text-gray-800 text-sm sm:text-base truncate group-hover:text-pink-600 transition-colors">
+                        {item.productName}
+                      </h3>
+                      <p className="text-blue-600 font-bold text-sm sm:text-lg">
+                        ₹{item.price}
+                      </p>
+                    </div>
+
+                    {/* Discount Tag */}
+                    {item.originalPrice && item.price < item.originalPrice && (
+                      <span className="absolute top-2 left-2 bg-red-500 text-white text-[10px] sm:text-xs px-2 py-1 rounded-full shadow-md animate-bounce">
+                        -
+                        {Math.round(
+                          ((item.originalPrice - item.price) /
+                            item.originalPrice) *
+                            100
+                        )}
+                        %
+                      </span>
+                    )}
                   </motion.div>
                 ))}
               </div>
@@ -737,8 +794,6 @@ const ProductDetails = () => {
           </motion.div>
         )}
       </AnimatePresence>
-
-    
     </div>
   );
 };

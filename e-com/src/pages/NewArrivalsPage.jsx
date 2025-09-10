@@ -2,19 +2,17 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Sparkles, Gift, ArrowRight } from "lucide-react";
 import { useAppContext } from "../context/AppContext.jsx";
+import { Eye } from "lucide-react";
 
 const NewArrivalsPage = () => {
   const { allProduct } = useAppContext();
 
-  // Sort products by creation date in descending order to get the newest first
   const sortedProducts = allProduct
     ? [...allProduct].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
     : [];
 
-  // Limit to the first 10 products for the "New Arrivals" section
   const newArrivalsProducts = sortedProducts.slice(0, 10);
 
-  // Check if there are more than 10 products to show the "View All" button
   const hasMoreProducts = sortedProducts.length > 10;
 
   return (
@@ -79,6 +77,16 @@ const NewArrivalsPage = () => {
                     <p className="text-xl font-bold text-red-600 mt-2">
                       ₹{product.price}
                     </p>
+                    <Link
+                      to={`/productDetails/${product._id}`}
+                      onClick={() =>  
+                        window.scrollTo({ top: 0, left: 0, behavior: "smooth" })
+                      }
+                      className="mt-auto inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded-full font-semibold shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
+                    >
+                      <Eye className=" hidden md:inline animate-pulse" />
+                      <span className="animate-pulse">View</span>
+                    </Link>
                   </div>
                 </div>
               ))}

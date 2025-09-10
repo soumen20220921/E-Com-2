@@ -149,7 +149,7 @@ const OrderDetails = ({ order, onClose }) => {
 
           {order.trackingId && (
             <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-              <h3 className="text-base font-semibold text-gray-900 mb-3">
+              <h3 className="text-base whitespace-nowrap font-semibold text-gray-900 mb-3">
                 Tracking ID
               </h3>
               <div className="flex items-center justify-between gap-2 flex-wrap">
@@ -182,15 +182,15 @@ const OrderDetails = ({ order, onClose }) => {
 
       {!order.orderReject && order.trackingId && (
         <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-lg mb-8 transform transition-all duration-500 animate-fade-in-up">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Truck className="h-5 w-5 text-blue-500 animate-bounce" />
+          <h2 className="text-sm whitespace-nowrap sm:text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <Truck className="h-6 w-6 text-blue-500 animate-bounce" />
             Tracking Information
           </h2>
-           Tracking ID:{" "}
-
+          <span className="text-sm xs:text-lg  text-gray-900">
+            Tracking ID:{" "}
+          </span>{" "}
           {/* Tracking ID with Copy */}
           <div className="flex items-center justify-between gap-3 flex-wrap bg-gradient-to-r from-blue-50 to-indigo-50 p-3 rounded-xl shadow-inner">
-         
             <span className="font-semibold text-blue-700 break-all text-sm sm:text-base animate-pulse">
               {order.trackingId}
             </span>
@@ -205,7 +205,6 @@ const OrderDetails = ({ order, onClose }) => {
               )}
             </button>
           </div>
-
           {/* Track Link */}
           <Link
             to={`https://www.google.com/search?q=${order.trackingId}`}
@@ -262,8 +261,8 @@ const OrderDetails = ({ order, onClose }) => {
               ))}
             </div>
           </div>
-          
-           {/* Delivery Estimate */}
+
+          {/* Delivery Estimate */}
           {!order.orderReject && <DeliveryEstimateSection order={order} />}
 
           {/* Help & Support */}
@@ -338,8 +337,6 @@ const OrderDetails = ({ order, onClose }) => {
             </div>
           </div>
 
-        
-
           {/* Tracking */}
           {!order.orderReject && !order.trackingId && (
             <div className="bg-white rounded-xl p-4 sm:p-6 shadow-md">
@@ -355,7 +352,7 @@ const OrderDetails = ({ order, onClose }) => {
             </div>
           )}
 
-           {/* Payment Info */}
+          {/* Payment Info */}
           <div className="bg-white rounded-xl p-4 sm:p-6 shadow-md">
             <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
               <CreditCard className="w-5 h-5 text-green-500 mr-2" />
