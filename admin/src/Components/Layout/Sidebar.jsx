@@ -25,7 +25,7 @@ export function Sidebar({ closeSidebar }) {
     { icon: <Package className="h-5 w-5" />, label: "Products", index: 2 },
     { icon: <ShoppingCart className="h-5 w-5" />, label: "Orders", index: 3 },
     { icon: <PlusCircle className="h-5 w-5" />, label: "Add Product", index: 4 },  
-    { icon: <Settings className="h-5 w-5" />, label: "Settings", index: 5 },  
+    // { icon: <Settings className="h-5 w-5" />, label: "Settings", index: 5 },  
   ];
 
   return (

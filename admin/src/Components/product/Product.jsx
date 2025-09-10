@@ -1,17 +1,27 @@
-import { Plus, Search, Filter, Edit, Trash2, Eye, Package } from "lucide-react";
+import React, { useState, useMemo, useCallback } from "react";
+import {
+  Plus,
+  Search,
+  Filter,
+  Edit,
+  Trash2,
+  Eye,
+  Package,
+  Flame,
+} from "lucide-react";
 import { useAppContext } from "../../context/Context";
-import { useCallback, useState, useMemo } from "react";
 import ViewProduct from "./ViewProduct";
 import EditProduct from "./EditProduct";
 import DeleteModal from "./DeleteModal";
 import axios from "axios";
 
 const Product = () => {
-  const { setTab, allProduct,getProduct } = useAppContext();
+  const { setTab, allProduct, getProduct } = useAppContext();
   const [searchTerm, setSearchTerm] = useState("");
   const [currentView, setCurrentView] = useState("list");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [filterStatus, setFilterStatus] = useState("all");
 
   const handleAddProduct = useCallback(() => {
     setTab(4);
@@ -49,23 +59,42 @@ const Product = () => {
     setCurrentView("list");
     setSelectedProduct(null);
   };
-// delete product function
+
+  // Delete product function
   const deleteProduct = async (productId) => {
     try {
       await axios.delete(`http://localhost:8000/api/product/${productId}`);
       getProduct();
     } catch (error) {
-      console.error("Error deleting product: " + error.message);
+      console.error("Error deleting product:", error.message);
     }
   };
+  
+
+  // Memoized and filtered product list
   const filteredProducts = useMemo(() => {
-    if (!searchTerm) return allProduct;
-    return allProduct.filter((product) =>
-      `${product.productName} ${product.description}`
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase())
-    );
-  }, [allProduct, searchTerm]);
+    let tempProducts = allProduct;
+
+    // Filter by search term
+    if (searchTerm) {
+      tempProducts = tempProducts.filter(
+        (product) =>
+          product.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          product.description.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Filter by status
+    if (filterStatus === "active") {
+      tempProducts = tempProducts.filter((product) => product.stock > 0);
+    } else if (filterStatus === "inactive") {
+      tempProducts = tempProducts.filter((product) => product.stock <= 0);
+    } else if (filterStatus === "hotSell") {
+      tempProducts = tempProducts.filter((product) => product.hotSell);
+    }
+
+    return tempProducts;
+  }, [allProduct, searchTerm, filterStatus]);
 
   const renderView = () => {
     if (currentView === "view" && selectedProduct) {
@@ -109,17 +138,44 @@ const Product = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search products..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               />
             </div>
 
-            <div className="flex items-center space-x-2">
+            {/* Desktop Filter Tabs */}
+            <div className="hidden md:flex items-center gap-2 bg-gray-50 rounded-lg p-1 border">
+              {[
+                { value: "all", label: "All" },
+                { value: "active", label: "Active" },
+                { value: "inactive", label: "Inactive" },
+                { value: "hotSell", label: "Hot Sell 🔥" },
+              ].map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => setFilterStatus(opt.value)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    filterStatus === opt.value
+                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow"
+                      : "text-gray-600 hover:bg-gray-100"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Mobile Dropdown */}
+            <div className="md:hidden flex items-center space-x-2">
               <Filter className="h-4 w-4 text-gray-400" />
-              <select className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                <option value="all">All Status</option>
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors w-full"
+              >
+                <option value="all">All</option>
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
-                <option value="draft">Draft</option>
+                <option value="hotSell">Hot Sell 🔥</option>
               </select>
             </div>
           </div>
@@ -134,7 +190,7 @@ const Product = () => {
                 className="bg-white rounded-2xl shadow hover:shadow-2xl border border-gray-100 overflow-hidden transition-all transform hover:-translate-y-1 duration-300"
               >
                 {/* Image */}
-                <div className="relative w-full h-48 bg-gray-100 overflow-hidden group">
+                <div className="relative w-full h-48 bg-gray-100 overflow-hidden group flex items-center justify-center">
                   {product.images && product.images.length > 0 ? (
                     <img
                       src={`http://localhost:8000/img/${product.images[0]}`}
@@ -143,6 +199,11 @@ const Product = () => {
                     />
                   ) : (
                     <Package className="h-16 w-16 text-gray-300" />
+                  )}
+                  {product.hotSell && (
+                    <span className="absolute top-2 right-2 flex items-center gap-1 px-3 py-1 text-xs font-semibold bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-full shadow-md animate-pulse">
+                      <Flame className="h-3 w-3" /> Hot
+                    </span>
                   )}
                 </div>
 
@@ -166,8 +227,14 @@ const Product = () => {
                         </span>
                       )}
                     </div>
-                    <span className="px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-700 animate-pulse">
-                      Active
+                    <span
+                      className={`px-3 py-1 text-xs font-semibold rounded-full animate-pulse ${
+                        product.stock > 0
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
+                      }`}
+                    >
+                      {product.stock > 0 ? "Active" : "Inactive"}
                     </span>
                   </div>
 
@@ -226,7 +293,7 @@ const Product = () => {
 
         {showDeleteModal && (
           <DeleteModal
-            productId={selectedProduct?._id}
+            product={selectedProduct}
             onConfirm={handleConfirmDelete}
             onCancel={() => setShowDeleteModal(false)}
           />

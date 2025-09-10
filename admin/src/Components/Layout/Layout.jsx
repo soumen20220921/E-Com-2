@@ -7,7 +7,7 @@ import Product from "../product/Product.jsx";
 import Order from "../orders/Order.jsx";
 import AddProduct from "../product/AddProduct.jsx";
 import Dashboard from "../dashboard/Dashboard.jsx";
-import Settings from "../settings/Settings.jsx";
+// import Settings from "../settings/Settings.jsx";
 
 const Layout = () => {
   const { tab } = useAppContext();
@@ -29,7 +29,7 @@ const Layout = () => {
       case 2: return <Product />;
       case 3: return <Order />;
       case 4: return <AddProduct />;
-      case 5: return <Settings />;
+      // case 5: return <Settings />;
       default: return <Dashboard />;
     }
   };

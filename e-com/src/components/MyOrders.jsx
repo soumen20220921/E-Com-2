@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Loader2, ArrowRight } from 'lucide-react';
-import axios from 'axios';
-import { useAppContext } from '../context/AppContext';
-import OrderDetails from './OrderDetails';
+import React, { useState, useEffect } from "react";
+import { ShoppingBag, Loader2, ArrowRight, ChevronUp } from "lucide-react";
+import axios from "axios";
+import { useAppContext } from "../context/AppContext";
+import OrderDetails from "./OrderDetails";
 
 const MyOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const { token } = useAppContext();
 
+  // Fetch Orders
   const fetchMyOrders = async () => {
     if (!token) {
       setError("You must be logged in to view your orders.");
@@ -24,7 +26,7 @@ const MyOrders = () => {
         `http://localhost:8000/api/payment/getOrderById`,
         { headers: { Auth: token } }
       );
-      setOrders(response.data.orders);
+      setOrders(response.data.orders || []);
     } catch (err) {
       console.error("Error fetching orders:", err);
       setError("Failed to fetch orders. Please try again.");
@@ -37,6 +39,21 @@ const MyOrders = () => {
     fetchMyOrders();
   }, [token]);
 
+  // Scroll to top button visibility
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) setShowScrollTop(true);
+      else setShowScrollTop(false);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // --- Conditional Views ---
   if (selectedOrder) {
     return <OrderDetails order={selectedOrder} onClose={() => setSelectedOrder(null)} />;
   }
@@ -77,7 +94,7 @@ const MyOrders = () => {
         <h2 className="text-2xl font-bold text-gray-800 mb-2">No Orders Found</h2>
         <p className="text-gray-600 mb-6 max-w-md">You haven't placed any orders yet. Start shopping now!</p>
         <button
-          onClick={() => window.location.href = '/'}
+          onClick={() => (window.location.href = "/")}
           className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-2xl shadow-lg hover:scale-105 transform transition-transform duration-300 font-semibold text-lg"
         >
           Continue Shopping
@@ -87,8 +104,11 @@ const MyOrders = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      {/* Header */}
       <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 animate-fade-in">Your Orders</h2>
+
+      {/* Orders List */}
       {orders.map((order) => (
         <div
           key={order._id}
@@ -119,7 +139,7 @@ const MyOrders = () => {
                 }`}
               >
                 {order.trackingId
-                  ? "Shipped"
+                  ? "Tracking ID"
                   : order.orderAccept
                   ? "Accepted"
                   : order.orderReject
@@ -136,6 +156,16 @@ const MyOrders = () => {
           </div>
         </div>
       ))}
+
+      {/* Scroll to Top Button */}
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 p-3 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 transition-all duration-300"
+        >
+          <ChevronUp className="h-6 w-6" />
+        </button>
+      )}
     </div>
   );
 };

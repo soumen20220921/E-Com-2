@@ -18,17 +18,24 @@ import { Pagination, Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import { motion } from "framer-motion";
 
 const Home = () => {
   const { allProduct } = useAppContext();
   const [hotSales, setHotSales] = useState([]);
   const [newArrivals, setNewArrivals] = useState([]);
 
-  useEffect(() => {
+ useEffect(() => {
     if (allProduct) {
-      const shuffledProducts = [...allProduct].sort(() => 0.5 - Math.random());
-      setHotSales(shuffledProducts.slice(0, 8));
-      setNewArrivals(allProduct.slice(0, 8));
+      // Only hotSell products for Hot Sales section
+      const hot = allProduct.filter((p) => p.hotSell);
+      setHotSales(hot.slice(0, 8));
+
+      // Latest products for New Arrivals
+      const sortedNew = [...allProduct].sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+      setNewArrivals(sortedNew.slice(0, 8));
     }
   }, [allProduct]);
 
@@ -83,7 +90,7 @@ const Home = () => {
         "https://media.istockphoto.com/id/484288034/photo/portrait-of-happy-woman-after-applying-vermilion-during-durga-puja.jpg?s=612x612&w=0&k=20&c=fRC7IbQmqN1U2vJD_hC8Id9JKfL9fB3aJZ1YEoTvGJ0=",
     },
     {
-      name: "Subhajit Dey",
+      name: "Subhra Dey",
       quote:
         "Ordered kidswear for my daughter. The fabric is soft and comfortable, perfect for daily use.",
       image:
@@ -148,92 +155,117 @@ const Home = () => {
           </div>
         </div>
       </section>
-
-      {/* Hot Sales Section */}
+      {/* Hot Sales */}
       <section className="py-16 bg-gradient-to-r from-red-50 via-white to-pink-50 rounded-3xl shadow-xl my-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-center mb-12">
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-8 sm:mb-12 gap-4">
             <h2 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-              <Flame className="text-red-500 animate-bounce" /> Hot Sales
+              <Flame size={38} className="text-red-500 animate-pulse " /> Hot
+              Sales
             </h2>
             <Link
               to="/hotsales"
-              className="flex items-center text-pink-600 hover:text-pink-700 font-semibold"
+              className="inline-flex items-center justify-center px-6 py-3 w-full sm:w-auto rounded-full font-semibold text-white bg-gradient-to-r from-red-500 to-pink-500 hover:from-pink-500 hover:to-red-500 shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
             >
-              View All <ArrowRight className="ml-1 h-5 w-5" />
+              View All Products
+              <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {hotSales.slice(0, 4).map((product) => (
-              <div
-                key={product._id}
-                className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl bg-white transform hover:-translate-y-2 hover:scale-105 transition-all duration-500 border border-pink-200"
-              >
-                <ProductCard
-                  product={{
-                    id: product._id,
-                    name: product.productName,
-                    image: product.images?.[0]
-                      ? `http://localhost:8000/img/${product.images[0]}`
-                      : "",
-                    price: product.price,
-                    oldprice:product.originalPrice,
-                  }}
-                  onAddToCart={() => {}}
-                  onToggleWishlist={() => {}}
-                  isCompactMobile={true}
-                />
-                
-                <span className="absolute top-2 right-2 bg-pink-600 text-white text-xs px-2 py-1 rounded-full animate-pulse">
-                  Hot
-                </span>
-              </div>
+
+          {/* Mobile Swipe */}
+          <Swiper
+            spaceBetween={16}
+            slidesPerView={1.5}
+            breakpoints={{
+              640: { slidesPerView: 2 },
+              1024: { slidesPerView: 4 },
+            }}
+            autoplay={{ delay: 3000 }}
+            modules={[Autoplay]}
+            className="mySwiper"
+          >
+            {hotSales.map((product) => (
+              <SwiperSlide key={product._id}>
+                <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl bg-white transform hover:-translate-y-2 hover:scale-105 transition-all duration-500 border border-pink-200">
+                  <ProductCard
+                    product={{
+                      id: product._id,
+                      name: product.productName,
+                      image: product.images?.[0]
+                        ? `http://localhost:8000/img/${product.images[0]}`
+                        : "https://placehold.co/400x400",
+                      price: product.price,
+                      oldprice: product.originalPrice,
+                    }}
+                    onAddToCart={() => {}}
+                    onToggleWishlist={() => {}}
+                    isCompactMobile={true}
+                  />
+                  <span className="absolute top-2 right-2 bg-pink-600 text-white text-xs px-2 py-1 rounded-full animate-pulse">
+                    Hot
+                  </span>
+                </div>
+              </SwiperSlide>
             ))}
-          </div>
+          </Swiper>
         </div>
       </section>
 
-      {/* New Arrivals Section */}
+      {/* New Arrivals */}
       <section className="py-16 bg-gradient-to-l from-blue-50 via-white to-indigo-50 rounded-3xl shadow-xl my-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-center mb-12">
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-8 sm:mb-12 gap-4">
             <h2 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-              <Crown className="text-indigo-500 animate-pulse" /> New Arrivals
+              <Crown size={38} className="text-indigo-500 animate-pulse" /> New
+              Arrivals
             </h2>
             <Link
               to="/newarrivals"
-              className="flex items-center text-indigo-600 hover:text-indigo-700 font-semibold"
+              className="inline-flex items-center justify-center px-6 py-3 w-full sm:w-auto rounded-full font-semibold text-white bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-blue-500 hover:to-indigo-500 shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
             >
-              View All <ArrowRight className="ml-1 h-5 w-5" />
+              View All Products
+              <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {newArrivals.slice(0, 4).map((product) => (
-              <div
-                key={product._id}
-                className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl bg-white transform hover:-translate-y-2 hover:scale-105 transition-all duration-500 border border-indigo-200"
-              >
-                <ProductCard
-                  product={{
-                    id: product._id,
-                    name: product.productName,
-                    image: product.images?.[0]
-                      ? `http://localhost:8000/img/${product.images[0]}`
-                      : "",
-                    price: product.price,
-                  }}
-                  onAddToCart={() => {}}
-                  onToggleWishlist={() => {}}
-                  isCompactMobile={true}
-                />
-                <span className="absolute top-2 right-2 bg-indigo-600 text-white text-xs px-2 py-1 rounded-full animate-bounce">
-                  New
-                </span>
-              </div>
+
+          {/* Mobile Swipe */}
+          <Swiper
+            spaceBetween={16}
+            slidesPerView={1.5}
+            breakpoints={{
+              640: { slidesPerView: 2 },
+              1024: { slidesPerView: 4 },
+            }}
+            autoplay={{ delay: 3000 }}
+            modules={[Autoplay]}
+            className="mySwiper"
+          >
+            {newArrivals.map((product) => (
+              <SwiperSlide key={product._id}>
+                <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl bg-white transform hover:-translate-y-2 hover:scale-105 transition-all duration-500 border border-indigo-200">
+                  <ProductCard
+                    product={{
+                      id: product._id,
+                      name: product.productName,
+                      image: product.images?.[0]
+                        ? `http://localhost:8000/img/${product.images[0]}`
+                        : "",
+                      price: product.price,
+                    }}
+                    onAddToCart={() => {}}
+                    onToggleWishlist={() => {}}
+                    isCompactMobile={true}
+                  />
+                  <span className="absolute top-2 right-2 bg-indigo-600 text-white text-xs px-2 py-1 rounded-full animate-bounce">
+                    New
+                  </span>
+                </div>
+              </SwiperSlide>
             ))}
-          </div>
+          </Swiper>
         </div>
       </section>
+      
 
       {/* Why Choose Darsh (Enhanced Design) */}
       <section className="py-20 bg-gradient-to-r from-yellow-50 via-amber-100 to-yellow-50">
@@ -321,6 +353,107 @@ const Home = () => {
           <ArrowRight className="ml-2 h-5 w-5" />
         </Link>
       </section>
+
+      {/* All Products */}
+<section className="py-16 bg-gradient-to-r from-gray-50 via-white to-gray-50 rounded-3xl shadow-xl my-8">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="flex flex-col sm:flex-row justify-between items-center mb-8 sm:mb-12 gap-4">
+      <h2 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
+        <ShoppingBag size={36} className="text-teal-500 animate-pulse" />
+        All Products
+      </h2>
+      <Link
+        to="/allproducts"
+        className="inline-flex items-center justify-center px-6 py-3 w-full sm:w-auto rounded-full font-semibold text-white bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-cyan-500 hover:to-teal-500 shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+      >
+        View All Products
+        <ArrowRight className="ml-2 h-5 w-5" />
+      </Link>
+    </div>
+
+    {/* Mobile & Tablet Swipe (below 1024px) */}
+    <div className="lg:hidden">
+      <Swiper
+        spaceBetween={16}
+        slidesPerView={1.5}
+        breakpoints={{
+          640: { slidesPerView: 2 },
+          768: { slidesPerView: 2.5 },
+        }}
+        autoplay={{ delay: 3000 }}
+        modules={[Autoplay]}
+        className="mySwiper"
+      >
+        {allProduct?.slice(0, 8).map((product) => (
+          <SwiperSlide key={product._id}>
+            <div className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl bg-white transform hover:-translate-y-2 hover:scale-105 transition-all duration-500 border border-teal-200">
+              <ProductCard
+                product={{
+                  id: product._id,
+                  name: product.productName,
+                  image: product.images?.[0]
+                    ? `http://localhost:8000/img/${product.images[0]}`
+                    : "https://placehold.co/400x400",
+                  price: product.price,
+                  description: product.description,
+                  stock: product.stock,
+                }}
+                isCompactMobile={true}
+                onAddToCart={() => {}}
+                onToggleWishlist={() => {}}
+              />
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
+
+    {/* Desktop Grid (1024px and above) */}
+    <div className="hidden lg:block">
+      <motion.div
+        className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        {allProduct && allProduct.length > 0 ? (
+          allProduct.slice(0, 4).map((product, index) => (
+            <motion.div
+              key={product._id}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: index * 0.05 }}
+              whileHover={{ y: -6, boxShadow: "0 8px 20px rgba(0,0,0,0.1)" }}
+            >
+              <ProductCard
+                product={{
+                  id: product._id,
+                  name: product.productName,
+                  image: product.images?.[0]
+                    ? `http://localhost:8000/img/${product.images[0]}`
+                    : "https://placehold.co/400x400",
+                  price: product.price,
+                  description: product.description,
+                  stock: product.stock,
+                }}
+                isCompactMobile={true}
+                onAddToCart={() => {}}
+                onToggleWishlist={() => {}}
+              />
+            </motion.div>
+          ))
+        ) : (
+          <motion.p
+            className="text-gray-600 col-span-full text-center py-10 text-lg"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            No products found.
+          </motion.p>
+        )}
+      </motion.div>
+    </div>
+  </div>
+</section>
 
       {/* Testimonials - Redesigned & Animated */}
       <section className="py-20 bg-gradient-to-r from-yellow-50 via-amber-100 to-yellow-50">

@@ -376,26 +376,42 @@ const AddProduct = () => {
                     required
                   />
                 </div>
-                {/* hot sell */}
+                {/* Hot Sell */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Hot Sell <span className="text-red-500">*</span>
                   </label>
-                  <select
-                    name="hotSell"
-                    value={formData.hotSell}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    required
-                  >
-                    <option value="">Select</option>
-                    {hotSell.map((cat, i) => (
-                      <option key={i} value={cat}>
-                        {cat}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="flex items-center gap-6">
+                    {/* Toggle Switch */}
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.hotSell === "true"}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            hotSell: e.target.checked ? "true" : "false",
+                          }))
+                        }
+                        className="sr-only peer"
+                      />
+                      <div className="w-14 h-8 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:bg-blue-500 transition-all"></div>
+                      <div className="absolute left-1 top-1 bg-white w-6 h-6 rounded-full peer-checked:translate-x-6 transition-transform"></div>
+                    </label>
+                    <span
+                      className={`font-semibold ${
+                        formData.hotSell === "true"
+                          ? "text-red-600"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      {formData.hotSell === "true"
+                        ? "Hot Selling"
+                        : "Not Hot Selling"}
+                    </span>
+                  </div>
                 </div>
+
                 {/* Category */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">

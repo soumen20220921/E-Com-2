@@ -1,21 +1,31 @@
 import { X, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useEffect } from "react";
 
-const DeleteModal = ({ productName, onConfirm, onCancel }) => {
+const DeleteModal = ({ product, onConfirm, onCancel }) => {
+  // Handle Esc key close
+  useEffect(() => {
+    const handleKey = (e) => e.key === "Escape" && onCancel();
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [onCancel]);
+
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 bg-gray-800 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+        className="fixed inset-0 flex items-center justify-center z-50 p-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        onClick={onCancel} 
       >
         <motion.div
-          className="relative bg-white rounded-2xl shadow-2xl p-6 sm:p-8 w-full max-w-sm sm:max-w-md"
+          className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-md p-6 sm:p-8"
           initial={{ opacity: 0, scale: 0.85, y: 50 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 30 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
+          onClick={(e) => e.stopPropagation()} 
         >
           {/* Close Button */}
           <button
@@ -25,25 +35,49 @@ const DeleteModal = ({ productName, onConfirm, onCancel }) => {
             <X className="h-5 w-5" />
           </button>
 
-          {/* Icon & Title */}
-          <div className="text-center">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1, rotate: [0, -10, 10, 0] }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-            >
-              <Trash2 className="mx-auto h-14 w-14 text-red-500" />
-            </motion.div>
+          {/* Trash Icon */}
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1, rotate: [0, -10, 10, 0] }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          >
+            <Trash2 className="mx-auto h-14 w-14 text-red-500" />
+          </motion.div>
 
-            <h3 className="mt-4 text-xl sm:text-2xl font-bold text-gray-900">
-              Confirm Deletion
-            </h3>
-            <p className="mt-2 text-sm sm:text-base text-gray-600">
-              Are you sure you want to delete{" "}
-              <span className="font-semibold text-gray-900">"{productName}"</span>?  
-              This action cannot be undone.
-            </p>
-          </div>
+          {/* Title */}
+          <h3 className="mt-4 text-xl sm:text-2xl font-bold text-gray-900 text-center">
+            Confirm Deletion
+          </h3>
+
+          {/* Product Preview */}
+          {product && (
+            <div className="mt-4 flex items-center gap-4 bg-gray-50 p-3 rounded-lg border">
+              <img
+                src={
+                  product.images && product.images.length > 0
+                    ? `http://localhost:8000/img/${product.images[0]}`
+                    : "https://placehold.co/60x60?text=No+Img"
+                }
+                alt={product.productName}
+                className="w-14 h-14 object-cover rounded-lg border"
+              />
+              <div className="flex-1">
+                <p className="font-semibold text-gray-900 truncate">
+                  {product.productName || "Unnamed Product"}
+                </p>
+                <p className="text-sm text-gray-500">₹{product.price}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Warning Text */}
+          <p className="mt-4 text-sm sm:text-base text-gray-600 text-center">
+            This action cannot be undone. Do you really want to delete{" "}
+            <span className="font-semibold text-gray-900">
+              {product?.productName || "this product"}
+            </span>
+            ?
+          </p>
 
           {/* Actions */}
           <div className="mt-6 flex flex-col sm:flex-row justify-center sm:space-x-4 space-y-3 sm:space-y-0">

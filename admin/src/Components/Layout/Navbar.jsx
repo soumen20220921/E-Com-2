@@ -45,7 +45,7 @@ const Navbar = ({ onMenuClick }) => {
           </button>
 
           {/* Dropdown Menu */}
-          {dropdownOpen && (
+          {/* {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 focus:outline-none z-50 animate-fade-in-down">
               <button
                 onClick={() => handleDropdownClick(5)}
@@ -60,7 +60,7 @@ const Navbar = ({ onMenuClick }) => {
                 <LogOut className="mr-3 h-4 w-4" /> Logout
               </button>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </nav>
