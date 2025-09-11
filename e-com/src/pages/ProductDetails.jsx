@@ -15,6 +15,9 @@ import {
   ArrowLeft,
   Star,
   Clock,
+  CircleOff,
+  Hourglass,
+  AlertTriangle,
 } from "lucide-react";
 import { FaWhatsapp, FaTelegram, FaFacebook } from "react-icons/fa";
 import axios from "axios";
@@ -48,7 +51,11 @@ const ProductDetails = () => {
   type: '',
   visible: false,
 });
+  const [countdown, setCountdown] = useState(null);
+  const isLowStock = product.stock > 0 && product.stock <= 5;
+  const isOutOfStock = product.stock === 0;
 
+  
   const showNotification = (message, type) => {
   setNotification({ message, type, visible: true });
 
@@ -56,6 +63,26 @@ const ProductDetails = () => {
     setNotification((prev) => ({ ...prev, visible: false }));
   }, 3000); 
 };
+
+useEffect(() => {
+  let timer;
+  if (isLowStock) {
+    setCountdown(120); 
+    showNotification("Hurry! Only a few left in stock ⚡", "warning");
+    timer = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }
+
+  return () => clearInterval(timer); 
+}, [isLowStock]);
+
 
   const images = useMemo(
     () => product?.images?.map((img) => `http://localhost:8000/img/${img}`) || [],
@@ -359,18 +386,47 @@ const ProductDetails = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.3 }}
+                  className={`w-full p-4 rounded-xl shadow-sm border 
+        ${isOutOfStock ? "bg-red-50 border-red-200" : ""}
+        ${isLowStock ? "bg-orange-50 border-orange-200" : ""}
+        ${!isOutOfStock && !isLowStock ? "bg-green-50 border-green-200" : ""}`}
                 >
-                  <div className="flex items-center gap-2 text-gray-700">
-                    <span className="text-lg">Status:</span>
-                    <span
-                      className={`font-semibold ${
-                        product.stock > 0 ? "text-green-600" : "text-red-500"
-                      }`}
-                    >
-                      {product.stock > 0
-                        ? `In Stock (${product.stock} available)`
-                        : "Out of Stock"}
-                    </span>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 text-gray-700">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm sm:text-lg">Status:</span>
+                      <span
+                        className={`font-semibold text-base sm:text-lg ${
+                          isOutOfStock
+                            ? "text-red-500"
+                            : isLowStock
+                            ? "text-orange-500"
+                            : "text-green-600"
+                        }`}
+                      >
+                        {isOutOfStock
+                          ? "Out of Stock"
+                          : isLowStock
+                          ? `Low Stock! (${product.stock} left)`
+                          : `In Stock (${product.stock} available)`}
+                      </span>
+                    </div>
+                    {isLowStock && (
+                      <motion.div
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 260,
+                          damping: 20,
+                        }}
+                        className="flex items-center gap-1 text-orange-500 font-bold mt-2 sm:mt-0"
+                      >
+                        <Hourglass className="h-4 w-4 animate-spin" />
+                        <span className="text-xs sm:text-sm">
+                          {countdown}s left
+                        </span>
+                      </motion.div>
+                    )}
                   </div>
                 </motion.div>
 
@@ -453,20 +509,34 @@ const ProductDetails = () => {
                   {!isAdded ? (
                     <motion.button
                       whileHover={{
-                        scale: 1.02,
-                        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                        scale: quantity > product.stock ? 1 : 1.02,
+                        boxShadow:
+                          quantity > product.stock
+                            ? "none"
+                            : "0 4px 12px rgba(0, 0, 0, 0.1)",
                       }}
-                      whileTap={{ scale: 0.98 }}
+                      whileTap={{ scale: quantity > product.stock ? 1 : 0.98 }}
                       onClick={handleAddToCart}
                       disabled={loading || quantity > product.stock}
-                      className="w-full py-4 bg-blue-600 text-white rounded-xl flex items-center justify-center gap-3 font-semibold text-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                      className={`w-full py-4 rounded-xl flex items-center justify-center gap-3 font-semibold text-lg transition-colors disabled:cursor-not-allowed
+                         ${
+                           quantity > product.stock
+                             ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+                             : "bg-blue-600 text-white hover:bg-blue-700"
+                         }`}
                     >
                       {loading ? (
                         <Loader2 className="h-6 w-6 animate-spin" />
+                      ) : quantity > product.stock ? (
+                        <CircleOff className="h-6 w-6" />
                       ) : (
                         <ShoppingCart className="h-6 w-6" />
                       )}
-                      {loading ? "Adding..." : "Add to Cart"}
+                      {loading
+                        ? "Adding..."
+                        : quantity > product.stock
+                        ? "Out of Stock"
+                        : "Add to Cart"}
                     </motion.button>
                   ) : (
                     <div className="flex flex-col sm:flex-row gap-3 w-full">

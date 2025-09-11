@@ -58,7 +58,6 @@ const Notification = ({ message, type, onClose }) => {
     </div>
   );
 };
-// --- End of new Notification component ---
 
 const EditProduct = ({ product, onSave, onCancel }) => {
   const { getProduct } = useAppContext();
@@ -78,48 +77,111 @@ const EditProduct = ({ product, onSave, onCancel }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [notification, setNotification] = useState(null);
 
-  const categories = [
-    "saree",
-    "blouse",
-    "men",
-    "kids",
-    "jwellary",
-    "acceceries",
-    "home decor",
-  ];
-  const hotSellOptions = ["true", "false"];
-  const subCategories = [
+  const categorySubcategoryMap = {
+     saree: [
     "all saree",
     "pure silk",
+    "cotton saree",
+    "banarasi",
+    "handloom",
     "latest saree",
+  ],
+  blouse: [
     "all blouse",
     "designer blouse",
     "cotton blouse",
+    "embroidered blouse",
+    "silk blouse",
+  ],
+  men: [
     "all men",
     "kurta",
     "panjabi",
     "tshirt",
-    "all jewelerray",
+    "formal shirt",
+    "casual shirt",
+    "jeans",
+  ],
+  kids: [
+    "all kids",
+    "frocks",
+    "tshirts",
+    "shorts",
+    "ethnic wear",
+    "party wear",
+  ],
+  jwellary: [
+    "all jewellery",
     "handmade",
+    "gold plated",
+    "silver",
+    "artificial",
     "latest",
+  ],
+  acceceries: [
+    "all accessories",
     "bags",
+    "wallets",
+    "belts",
+    "sunglasses",
+    "watches",
+    "scarves",
+  ],
+  "home decor": [
     "all home decor",
     "name plates",
-  ];
+    "wall art",
+    "lamps",
+    "vases",
+    "handicrafts",
+    "cushions",
+  ],
+  footwear: [
+    "all footwear",
+    "sandals",
+    "heels",
+    "sneakers",
+    "formal shoes",
+    "flip flops",
+  ],
+  beauty: [
+    "all beauty",
+    "makeup",
+    "skincare",
+    "haircare",
+    "fragrances",
+    "ayurvedic",
+  ],
+  electronics: [
+    "all electronics",
+    "mobiles",
+    "laptops",
+    "headphones",
+    "watches",
+    "gadgets",
+  ],
+  };
+
+  // New: Get categories from the keys of the map
+  const categories = Object.keys(categorySubcategoryMap);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    // New: Check if the category is changing and reset subCategory
+    if (name === "category") {
+      setFormData((prev) => ({
+        ...prev,
+        category: value,
+        subCategory: "", // Reset subCategory to an empty string
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
-  const showNotification = (type) => {
-  const messages = {
-    success: "Product updated successfully.",
-    error: "Failed to update product. Please try again.",
-    info: "Product edit canceled.",
+  const showNotification = (type, message) => {
+    setNotification({ type, message });
   };
-  setNotification({ type, message: messages[type] });
-};
 
   const handleCancel = () => {
     // Show a notification for a canceled edit
@@ -132,7 +194,6 @@ const EditProduct = ({ product, onSave, onCancel }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    const hotSellValue = formData.hotSell === "true";
     const updatedData = {
       productName: formData.productName,
       price: formData.price,
@@ -140,7 +201,7 @@ const EditProduct = ({ product, onSave, onCancel }) => {
       category: formData.category,
       subCategory: formData.subCategory,
       stock: formData.stock,
-      hotSell: hotSellValue,
+      hotSell: formData.hotSell, 
       description: formData.description,
       specification: formData.specification,
     };
@@ -152,9 +213,7 @@ const EditProduct = ({ product, onSave, onCancel }) => {
         { headers: { "Content-Type": "application/json" } }
       );
 
-      // Show a success notification
       showNotification("success", "Product updated successfully! 🎉");
-      // Delay the onSave call to allow the user to see the notification
       setTimeout(() => {
         onSave();
         getProduct();
@@ -290,13 +349,16 @@ const EditProduct = ({ product, onSave, onCancel }) => {
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 required
+                disabled={!formData.category}
               >
                 <option value="">Select a sub-category</option>
-                {subCategories.map((subCat) => (
-                  <option key={subCat} value={subCat}>
-                    {subCat.charAt(0).toUpperCase() + subCat.slice(1)}
-                  </option>
-                ))}
+                {formData.category &&
+                  categorySubcategoryMap[formData.category] &&
+                  categorySubcategoryMap[formData.category].map((subCat) => (
+                    <option key={subCat} value={subCat}>
+                      {subCat.charAt(0).toUpperCase() + subCat.slice(1)}
+                    </option>
+                  ))}
               </select>
             </div>
 
@@ -330,14 +392,16 @@ const EditProduct = ({ product, onSave, onCancel }) => {
                 id="hotSell"
                 name="hotSell"
                 value={formData.hotSell ? "true" : "false"}
-                onChange={handleInputChange}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    hotSell: e.target.value === "true",
+                  }))
+                }
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
-                {hotSellOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option.charAt(0).toUpperCase() + option.slice(1)}
-                  </option>
-                ))}
+                <option value="true">True</option>
+                <option value="false">False</option>
               </select>
             </div>
             {/* Description and Specification */}

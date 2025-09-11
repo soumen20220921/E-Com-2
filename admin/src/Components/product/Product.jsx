@@ -74,6 +74,10 @@ const Product = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [filterStatus, setFilterStatus] = useState("all");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+  const [onSaleOnly, setOnSaleOnly] = useState(false);
+
 
   // State for the notification
   const [notification, setNotification] = useState(null);
@@ -133,32 +137,47 @@ const Product = () => {
     }
   };
 
-  // Memoized and filtered product list
-  const filteredProducts = useMemo(() => {
-    let tempProducts = allProduct;
+    const productStats = useMemo(() => {
+    return {
+      total: allProduct.length,
+      active: allProduct.filter((p) => p.stock > 0).length,
+      inactive: allProduct.filter((p) => p.stock <= 0).length,
+      hotSell: allProduct.filter((p) => p.hotSell).length,
+      onSale: allProduct.filter(
+        (p) => p.originalPrice && p.price < p.originalPrice
+      ).length,
+    };
+  }, [allProduct]);
 
-    // Filter by search term
+  // Memoized and filtered product list
+   const filteredProducts = useMemo(() => {
+    let temp = allProduct;
+
     if (searchTerm) {
-      tempProducts = tempProducts.filter(
-        (product) =>
-          product.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product.description.toLowerCase().includes(searchTerm.toLowerCase())
+      temp = temp.filter(
+        (p) =>
+          p.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          p.description.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-
-    // Filter by status
     if (filterStatus === "active") {
-      tempProducts = tempProducts.filter((product) => product.stock > 0);
+      temp = temp.filter((p) => p.stock > 0);
     } else if (filterStatus === "inactive") {
-      tempProducts = tempProducts.filter((product) => product.stock <= 0);
+      temp = temp.filter((p) => p.stock <= 0);
     } else if (filterStatus === "hotSell") {
-      tempProducts = tempProducts.filter((product) => product.hotSell);
+      temp = temp.filter((p) => p.hotSell);
     }
+    if (minPrice) temp = temp.filter((p) => p.price >= parseFloat(minPrice));
+    if (maxPrice) temp = temp.filter((p) => p.price <= parseFloat(maxPrice));
+    if (onSaleOnly)
+      temp = temp.filter(
+        (p) => p.originalPrice && p.price < p.originalPrice
+      );
 
-    return tempProducts;
-  }, [allProduct, searchTerm, filterStatus]);
+    return temp;
+  }, [allProduct, searchTerm, filterStatus, minPrice, maxPrice, onSaleOnly]);
 
-  const renderView = () => {
+    const renderView = () => {
     if (currentView === "view" && selectedProduct) {
       return <ViewProduct product={selectedProduct} onBack={handleCancel} />;
     }
@@ -174,6 +193,66 @@ const Product = () => {
 
     return (
       <div className="p-4 lg:p-6 space-y-6 relative">
+        {/* Stats Overview Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            {
+              label: "Total",
+              value: productStats.total,
+              color: "bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800",
+              icon: (
+                <Package className="h-6 w-6 text-gray-500 group-hover:scale-125 transition-transform duration-300" />
+              ),
+              filter: "all",
+            },
+            {
+              label: "Active",
+              value: productStats.active,
+              color:
+                "bg-gradient-to-r from-green-100 to-green-200 text-green-800",
+              icon: (
+                <CheckCircle className="h-6 w-6 text-green-500 animate-bounce" />
+              ),
+              filter: "active",
+            },
+            {
+              label: "Inactive",
+              value: productStats.inactive,
+              color: "bg-gradient-to-r from-red-100 to-red-200 text-red-800",
+              icon: <XCircle className="h-6 w-6 text-red-500 animate-pulse" />,
+              filter: "inactive",
+            },
+            {
+              label: "Hot Sell",
+              value: productStats.hotSell,
+              color:
+                "bg-gradient-to-r from-orange-100 to-yellow-200 text-orange-800",
+              icon: <Flame className="h-6 w-6 text-orange-500 animate-pulse" />,
+              filter: "hotSell",
+            },
+          ].map((stat) => (
+            <div
+              key={stat.label}
+              onClick={() => {
+                if (stat.filter === "onSale") {
+                  setOnSaleOnly(true);
+                  setFilterStatus("all");
+                } else {
+                  setFilterStatus(stat.filter);
+                  setOnSaleOnly(false);
+                }
+              }}
+              className={`group cursor-pointer p-5 rounded-2xl shadow-md ${stat.color} text-center transform hover:-translate-y-1 hover:shadow-xl transition-all`}
+            >
+              <div className="flex items-center justify-center mb-2">
+                {stat.icon}
+              </div>
+              <p className="text-sm font-medium">{stat.label}</p>
+              <p className="text-2xl font-bold">{stat.value}</p>
+            </div>
+          ))}
+        </div>
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>

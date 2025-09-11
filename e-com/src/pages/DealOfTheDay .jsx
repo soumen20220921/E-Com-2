@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Timer } from "lucide-react";
+import { Timer, ArrowRight } from "lucide-react";
 
 const DealOfTheDay = ({ dealOfTheDay }) => {
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
@@ -91,13 +91,17 @@ const DealOfTheDay = ({ dealOfTheDay }) => {
           </div>
 
           {/* Button */}
-          <Link
-            to={`/productDetails/${dealOfTheDay._id}`}
-            className="inline-block mt-4 animate-arrowMove px-6 py-3 rounded-xl bg-gradient-to-r from-red-500 via-pink-500 to-purple-600 text-white font-semibold shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-500 relative overflow-hidden"
-          >
-            <span className="relative z-10">Grab Deal</span>
-            <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          </Link>
+         <Link
+  to={`/productDetails/${dealOfTheDay._id}`}
+  className="group inline-flex animate-arrowMove items-center mt-4 px-6 py-3 rounded-xl bg-gradient-to-r from-red-500 via-pink-500 to-purple-600 text-white font-semibold shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-500 relative overflow-hidden"
+>
+  <span className="relative z-10">Grab Deal</span>
+  <ArrowRight
+    className="h-5 w-5 ml-2 relative z-10 animate-arrowMove transform transition-transform duration-300 group-hover:translate-x-2"
+  />
+  <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+</Link>
+
         </div>
       </div>
     </section>

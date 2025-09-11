@@ -93,38 +93,104 @@ const AddProduct = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [notification, setNotification] = useState(null);
 
-  const categories = [
-    "saree",
-    "blouse",
-    "men",
-    "kids",
-    "jwellary",
-    "acceceries",
-    "home decor",
-  ];
-  const hotSell = ["true", "false"];
-  const subCategories = [
+  const categorySubcategoryMap = {
+     saree: [
     "all saree",
     "pure silk",
+    "cotton saree",
+    "banarasi",
+    "handloom",
     "latest saree",
+  ],
+  blouse: [
     "all blouse",
     "designer blouse",
     "cotton blouse",
+    "embroidered blouse",
+    "silk blouse",
+  ],
+  men: [
     "all men",
     "kurta",
     "panjabi",
     "tshirt",
-    "all jewelerray",
+    "formal shirt",
+    "casual shirt",
+    "jeans",
+  ],
+  kids: [
+    "all kids",
+    "frocks",
+    "tshirts",
+    "shorts",
+    "ethnic wear",
+    "party wear",
+  ],
+  jwellary: [
+    "all jewellery",
     "handmade",
+    "gold plated",
+    "silver",
+    "artificial",
     "latest",
+  ],
+  acceceries: [
+    "all accessories",
     "bags",
+    "wallets",
+    "belts",
+    "sunglasses",
+    "watches",
+    "scarves",
+  ],
+  "home decor": [
     "all home decor",
     "name plates",
-  ];
+    "wall art",
+    "lamps",
+    "vases",
+    "handicrafts",
+    "cushions",
+  ],
+  footwear: [
+    "all footwear",
+    "sandals",
+    "heels",
+    "sneakers",
+    "formal shoes",
+    "flip flops",
+  ],
+  beauty: [
+    "all beauty",
+    "makeup",
+    "skincare",
+    "haircare",
+    "fragrances",
+    "ayurvedic",
+  ],
+  electronics: [
+    "all electronics",
+    "mobiles",
+    "laptops",
+    "headphones",
+    "watches",
+    "gadgets",
+  ],
+  };
+
+  const categories = Object.keys(categorySubcategoryMap);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === "category") {
+      setFormData((prev) => ({
+        ...prev,
+        category: value,
+        subCategory: "", 
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleImageChange = (e, index) => {
@@ -443,13 +509,15 @@ const AddProduct = () => {
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     required
+                    disabled={!formData.category} 
                   >
                     <option value="">Select</option>
-                    {subCategories.map((sub, i) => (
-                      <option key={i} value={sub}>
-                        {sub}
-                      </option>
-                    ))}
+                    {formData.category &&
+                      categorySubcategoryMap[formData.category].map((sub, i) => (
+                        <option key={i} value={sub}>
+                          {sub}
+                        </option>
+                      ))}
                   </select>
                 </div>
               </div>

@@ -32,7 +32,7 @@ const Notification = ({ type, message, onClose }) => {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 animate-slide-in-up md:max-w-md w-[calc(100%-2rem)]">
+    <div className="fixed top-4 right-4 z-50 animate-slide-in-up md:max-w-md w-[calc(100%-2rem)]">
       <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200">
         <div className="p-4 flex items-center space-x-4">
           <div className="flex-shrink-0">{icons[type]}</div>
@@ -450,7 +450,7 @@ const OrderDetails = ({ order, onClose }) => {
                   Billing Information
                 </p>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
                   {/* Left column */}
                   <div className="space-y-2">
                     <p className="flex items-center">

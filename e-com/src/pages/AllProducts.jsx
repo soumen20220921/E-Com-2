@@ -14,6 +14,7 @@ import {
   PackageCheck,
   PackageX,
   Sparkles,
+  Blocks,
 } from "lucide-react";
 
 const ALL_CATEGORIES = [
@@ -24,6 +25,11 @@ const ALL_CATEGORIES = [
   "kids",
   "jwellary",
   "acceceries",
+  "home decor",
+  "footwear",
+  "beauty",
+  "electronics",
+  
 ];
 
 const AllProducts = () => {
@@ -190,9 +196,9 @@ const AllProducts = () => {
       </motion.div>
 
       {/* Category Tabs */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
+       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
         <motion.div
-          className="flex gap-4 overflow-x-auto pb-4 scroll-smooth no-scrollbar"
+          className="flex gap-3 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 scrollbar-thumb-rounded-full"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.5 }}
@@ -204,13 +210,14 @@ const AllProducts = () => {
                 setSelectedCategory(category);
                 setSelectedSubCategory("all");
               }}
-              className={`flex-shrink-0 px-6 py-2 rounded-full font-medium text-sm capitalize whitespace-nowrap transition-all duration-300 shadow-md
+              className={`
+                flex-shrink-0 px-6 py-2 rounded-full font-medium text-sm capitalize whitespace-nowrap transition-all duration-300
                 ${
                   selectedCategory === category
-                    ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white transform scale-105"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
+                    ? "bg-white text-gray-800 border-2 border-indigo-500 shadow-lg"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 }`}
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.05, boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
               whileTap={{ scale: 0.95 }}
             >
               {category}
@@ -223,7 +230,7 @@ const AllProducts = () => {
       {selectedCategory !== "all" && availableSubCategories.length > 0 && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
           <motion.h3
-            className="text-lg md:text-xl font-bold text-gray-800 mb-4"
+            className="text-center text-lg md:text-xl font-bold text-gray-800 mb-4"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.6, duration: 0.5 }}
@@ -231,7 +238,7 @@ const AllProducts = () => {
             Explore {selectedCategory}
           </motion.h3>
           <motion.div
-            className="flex gap-3 overflow-x-auto pb-2 scroll-smooth no-scrollbar"
+            className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-indigo-400 scrollbar-track-indigo-100 scrollbar-thumb-rounded-full"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.4 }}
@@ -240,11 +247,12 @@ const AllProducts = () => {
               <motion.button
                 key={sub}
                 onClick={() => setSelectedSubCategory(sub)}
-                className={`flex-shrink-0 px-5 py-1.5 rounded-full font-medium text-xs capitalize transition-all duration-300
+                className={`
+                  flex-shrink-0 px-5 py-1.5 rounded-full font-medium text-xs capitalize transition-all duration-300
                   ${
                     selectedSubCategory === sub
-                      ? "bg-indigo-500 text-white shadow"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      ? "bg-indigo-600 text-white shadow-md"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                   }`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -255,7 +263,6 @@ const AllProducts = () => {
           </motion.div>
         </div>
       )}
-
       {/* Filters + Products */}
       <div className="flex flex-col md:flex-row gap-6 px-4 md:px-10">
         <AnimatePresence>
@@ -543,13 +550,26 @@ const AllProducts = () => {
                 </motion.div>
               ))
             ) : (
-              <motion.p
+              <motion.div
                 className="text-gray-600 col-span-full text-center py-10 text-lg"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
               >
-                No products found in this category.
-              </motion.p>
+                 <motion.div
+                className="col-span-full text-center py-10 flex flex-col items-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                <Blocks className="w-16 h-16 text-gray-400 mb-4" />
+                <p className="text-gray-600 text-lg">No products found for this subcategory.</p>
+                <button
+                  onClick={handleResetFilters}
+                  className="mt-4 text-sm text-indigo-500 hover:text-indigo-600 flex items-center gap-1 transition"
+                >
+                  <RotateCcw className="w-4 h-4" /> Reset Filters
+                </button>
+              </motion.div>
+              </motion.div>
             )}
           </motion.div>
         </div>
