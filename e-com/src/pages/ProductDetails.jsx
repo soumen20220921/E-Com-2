@@ -17,7 +17,6 @@ import {
   Clock,
   CircleOff,
   Hourglass,
-  AlertTriangle,
 } from "lucide-react";
 import { FaWhatsapp, FaTelegram, FaFacebook } from "react-icons/fa";
 import axios from "axios";
@@ -395,7 +394,7 @@ useEffect(() => {
                     <div className="flex items-center gap-2">
                       <span className="text-sm sm:text-lg">Status:</span>
                       <span
-                        className={`font-semibold text-base sm:text-lg ${
+                        className={`font-semibold text-sm sm:text-lg ${
                           isOutOfStock
                             ? "text-red-500"
                             : isLowStock
@@ -810,60 +809,68 @@ useEffect(() => {
         </motion.div>
       </div>
 
-      {/* Share Modal */}
+           {/* Share Modal */}
       <AnimatePresence>
         {showShareModal && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4"
+            className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4"
             onClick={() => setShowShareModal(false)}
           >
             <motion.div
-              initial={{ scale: 0.95, y: 8 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 8 }}
-              className="bg-white p-6 rounded-2xl shadow-xl w-full max-w-sm"
+              initial={{ scale: 0.9, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.9, y: 20, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md relative"
               onClick={(e) => e.stopPropagation()}
             >
-              <h3 className="text-lg font-bold mb-4">Share Product</h3>
-              <div className="flex justify-around gap-3">
+              <button
+                onClick={() => setShowShareModal(false)}
+                className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-5 w-5" />
+              </button>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
+                Share this product
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <button
                   onClick={() => handleShare("whatsapp")}
-                  className="p-3 bg-green-500 text-white rounded-xl hover:scale-105"
+                  className="flex flex-col items-center gap-2 p-3 rounded-lg bg-green-50 hover:bg-green-100 transition"
                 >
-                  <FaWhatsapp size={24} />
+                  <FaWhatsapp className="h-6 w-6 text-green-600" />
+                  <span className="text-xs font-medium text-gray-700">WhatsApp</span>
                 </button>
                 <button
                   onClick={() => handleShare("telegram")}
-                  className="p-3 bg-blue-400 text-white rounded-xl hover:scale-105"
+                  className="flex flex-col items-center gap-2 p-3 rounded-lg bg-blue-50 hover:bg-blue-100 transition"
                 >
-                  <FaTelegram size={24} />
+                  <FaTelegram className="h-6 w-6 text-blue-500" />
+                  <span className="text-xs font-medium text-gray-700">Telegram</span>
                 </button>
                 <button
                   onClick={() => handleShare("facebook")}
-                  className="p-3 bg-blue-700 text-white rounded-xl hover:scale-105"
+                  className="flex flex-col items-center gap-2 p-3 rounded-lg bg-blue-100 hover:bg-blue-200 transition"
                 >
-                  <FaFacebook size={24} />
+                  <FaFacebook className="h-6 w-6 text-blue-700" />
+                  <span className="text-xs font-medium text-gray-700">Facebook</span>
                 </button>
                 <button
                   onClick={() => handleShare("copy")}
-                  className="p-3 bg-gray-200 rounded-xl hover:scale-105"
+                  className="flex flex-col items-center gap-2 p-3 rounded-lg bg-gray-100 hover:bg-gray-200 transition"
                 >
-                  <Copy size={24} />
+                  <Copy className="h-6 w-6 text-gray-600" />
+                  <span className="text-xs font-medium text-gray-700">Copy Link</span>
                 </button>
               </div>
-              <button
-                onClick={() => setShowShareModal(false)}
-                className="mt-6 w-full py-2 bg-gray-100 rounded-xl text-gray-700 hover:bg-gray-200"
-              >
-                Close
-              </button>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
+
     </div>
   );
 };

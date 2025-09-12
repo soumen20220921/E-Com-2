@@ -32,14 +32,19 @@ const Dashboard = () => {
     const fetchData = async () => {};
     fetchData();
   }, []);
+  const paidOrders = orders?.filter((o) => o.payStatus === "paid") || [];
 
   const totalUsers = allUser?.length || 0;
-  const totalOrders = orders?.length || 0;
+  const totalOrders = paidOrders.length;
   const totalProducts = allProduct?.length || 0;
   const totalRevenue = useMemo(() => {
-    return orders?.reduce((sum, order) => sum + (order.amount || 0), 0) || 0;
-  }, [orders]);
+    return paidOrders.reduce((sum, order) => sum + (order.amount || 0), 0);
+  }, [paidOrders]);
 
+  const avgOrderValue = totalOrders ? (totalRevenue / totalOrders).toFixed(2) : 0;
+  const paymentSuccessRate = orders?.length
+    ? ((paidOrders.length / orders.length) * 100).toFixed(1)
+    : 0;
   const stats = [
     { 
       name: "Total Revenue", 
@@ -123,7 +128,7 @@ const Dashboard = () => {
        <div className="bg-white rounded-xl shadow-md p-6 animate-slide-in-right">
   <h2 className="text-xl font-semibold text-gray-800 mb-4">Recent Orders</h2>
   <div className="space-y-4 max-h-80 overflow-y-auto custom-scrollbar">
-    {orders
+    {paidOrders
       ?.slice()
       .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate))
       .slice(0, 5)
@@ -168,7 +173,7 @@ const Dashboard = () => {
 
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* <div className="bg-white rounded-2xl shadow-lg p-6 animate-fade-in-up">
           <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
             <Star className="text-yellow-500" /> Top Products
@@ -199,6 +204,21 @@ const Dashboard = () => {
               }}
             ></div>
           </div>
+        </div>
+         {/* Average Order Value */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 animate-fade-in-up">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Avg. Order Value</h2>
+          <p className="text-2xl font-bold text-indigo-600">₹{avgOrderValue}</p>
+          <p className="text-gray-500 text-sm">Across {totalOrders} paid orders</p>
+        </div>
+
+        {/* Payment Success Rate */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 animate-fade-in-up">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Payment Success Rate</h2>
+          <p className="text-2xl font-bold text-green-600">{paymentSuccessRate}%</p>
+          <p className="text-gray-500 text-sm">
+            {paidOrders.length} of {orders?.length || 0} orders successful
+          </p>
         </div>
       </div>
     </div>

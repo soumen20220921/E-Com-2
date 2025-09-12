@@ -365,7 +365,7 @@ const OrderDetails = ({ order, onClose }) => {
               </span>
             </p>
             <p className="text-sm text-gray-700">
-              Status: <span className="font-semibold text-green-600">Paid</span>
+              Status: <span className="font-semibold text-green-600">{order.payStatus}</span>
             </p>
           </div>
         </div>
