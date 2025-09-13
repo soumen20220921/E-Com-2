@@ -6,6 +6,7 @@ import {
   Package,
   CalendarDays,
   Filter,
+  X,
 } from "lucide-react";
 import OrderDetails from "./OrderDetails";
 import { useAppContext } from "../../context/Context";
@@ -295,6 +296,89 @@ export default function OrderListDesign() {
         {/* Filter Modal for Mobile */}
         {isFilterModalOpen && (
           <div className="fixed inset-0 z-50 flex items-end bg-black bg-opacity-50 backdrop-blur-sm">
+           <div className="bg-white rounded-t-2xl p-6 w-full max-h-[80%] overflow-y-auto transform transition-transform ease-out duration-300 translate-y-0">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-lg font-bold text-gray-800">Filters</h3>
+                <button
+                  onClick={() => setIsFilterModalOpen(false)}
+                  className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="space-y-6">
+                {/* Payment Filter */}
+                {/* <div>
+                  <label
+                    htmlFor="mobile-payment-filter"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    Payment Status
+                  </label>
+                  <select
+                    id="mobile-payment-filter"
+                    value={filterPayment}
+                    onChange={(e) => setFilterPayment(e.target.value)}
+                    className="w-full py-3 px-4 border border-gray-300 rounded-lg text-sm text-gray-700 shadow-sm"
+                  >
+                    <option value="All">All Payments</option>
+                    <option value="Paid">Paid</option>
+                    <option value="Not Paid">Not Paid</option>
+                  </select>
+                </div> */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Date Range
+                  </label>
+                  <div className="space-y-4">
+                    <div className="relative">
+                      <CalendarDays
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                        size={20}
+                      />
+                      <input
+                        type="date"
+                        value={dateRange.from}
+                        onChange={(e) =>
+                          setDateRange({ ...dateRange, from: e.target.value })
+                        }
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg text-sm text-gray-700 shadow-sm"
+                      />
+                    </div>
+                    <div className="relative">
+                      <CalendarDays
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                        size={20}
+                      />
+                      <input
+                        type="date"
+                        value={dateRange.to}
+                        onChange={(e) =>
+                          setDateRange({ ...dateRange, to: e.target.value })
+                        }
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg text-sm text-gray-700 shadow-sm"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-6 flex flex-col gap-3">
+                <button
+                  onClick={() => {
+                    handleClearFilters();
+                  }}
+                  className="w-full py-3 px-4 rounded-lg text-red-600 bg-red-50 hover:bg-red-100 transition-colors"
+                >
+                  Clear Filters
+                </button>
+                <button
+                  onClick={() => setIsFilterModalOpen(false)}
+                  className="w-full py-3 px-4 rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                >
+                  Apply Filters
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
